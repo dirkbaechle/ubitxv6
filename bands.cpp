@@ -16,20 +16,36 @@ struct Band_t {
 const char UNKNOWN_BAND_NAME [] PROGMEM = "??";
 
 constexpr Band_t bands [] PROGMEM {
-//  {       0UL,      255UL, 255, "U8"},//Utility conversion option
-//  {       0UL,    65535UL, 254, "UF"},//Utility conversion option
-//  {  530000UL,  1700000UL, 253, "AM"},//Broadcast AM, actually centers at 268, but uint8 can't do that
-//  { 1800000UL,  2000000UL, 160, "A0"},//0xA0 is 160
+#if IARU_REGION == 1
+  // Africa, Europe, Middle East, and northern Asia
+  { 3500000UL,  3800000UL,  80, "80"},
+  { 7000000UL,  7200000UL,  40, "40"},
+  {10100000UL, 10150000UL,  30, "30"},
+  {14000000UL, 14350000UL,  20, "20"},
+  {18068000UL, 18168000UL,  17, "17"},
+  {21000000UL, 21450000UL,  15, "15"},
+  {28000000UL, 29700000UL,  10, "10"},
+#else
+#if IARU_REGION == 3
+  // the rest of Asia and the Pacific
+  { 3500000UL,  3900000UL,  80, "80"},
+  { 7000000UL,  7200000UL,  40, "40"},
+  {10110000UL, 10150000UL,  30, "30"},
+  {14000000UL, 14350000UL,  20, "20"},
+  {18068000UL, 18168000UL,  17, "17"},
+  {21000000UL, 21450000UL,  15, "15"},
+  {28000000UL, 29700000UL,  10, "10"},
+#else
+  // The default - the Americas
   { 3500000UL,  4000000UL,  80, "80"},
-//  { 5330500UL,  5403500UL,  60, "60"},
   { 7000000UL,  7300000UL,  40, "40"},
   {10100000UL, 10150000UL,  30, "30"},
   {14000000UL, 14350000UL,  20, "20"},
   {18068000UL, 18168000UL,  17, "17"},
   {21000000UL, 21450000UL,  15, "15"},
-//  {24890000UL, 24990000UL,  12, "12"},
-//  {26965000UL, 27405000UL,  11, "CB"},//Citizen's Band
   {28000000UL, 29700000UL,  10, "10"},
+#endif // of: #if IARU_REGION == 3 
+#endif // of: #if IARU_REGION == 1
 };
 constexpr uint8_t NUM_BANDS = sizeof(bands)/sizeof(bands[0]);
 
