@@ -44,8 +44,7 @@ void initQuickList(void)
   drawQuickList();
   initSelector(&quickListMenuSelectedItemRaw,
                 quickListMenuButtons,
-                QUICKLIST_MENU_NUM_BUTTONS,
-                MorsePlaybackType_e::PlayChar);
+                QUICKLIST_MENU_NUM_BUTTONS);
 }
 
 MenuReturn_e runQuickList(const ButtonPress_e tuner_button,

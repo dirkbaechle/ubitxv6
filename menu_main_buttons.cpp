@@ -11,7 +11,6 @@
 #include "menu_main.h"
 #include "menu_numpad.h"
 #include "menu_quicklist.h"
-#include "morse.h"
 #include "nano_gui.h"
 #include "scratch_space.h"
 #include "settings.h"
@@ -55,11 +54,14 @@ static const unsigned int LAYOUT_TX_HEIGHT = 36;
 
 void drawTx()
 {
-  if(globalSettings.txActive){
+  if (globalSettings.txActive){
     strncpy_P(b,(const char*)F("TX"),sizeof(b));
-    displayText(b,LAYOUT_TX_X,LAYOUT_TX_Y,LAYOUT_TX_WIDTH,LAYOUT_TX_HEIGHT,COLOR_ACTIVE_TEXT,COLOR_ACTIVE_BACKGROUND,COLOR_BACKGROUND);
-  }
-  else{
+    if (globalSettings.morsePracticeMode) {
+      displayText(b,LAYOUT_TX_X,LAYOUT_TX_Y,LAYOUT_TX_WIDTH,LAYOUT_TX_HEIGHT,DISPLAY_ORANGE,DISPLAY_OLIVE,COLOR_BACKGROUND);
+    } else {
+      displayText(b,LAYOUT_TX_X,LAYOUT_TX_Y,LAYOUT_TX_WIDTH,LAYOUT_TX_HEIGHT,COLOR_ACTIVE_TEXT,COLOR_ACTIVE_BACKGROUND,COLOR_BACKGROUND);
+    }
+  } else {
     displayFillrect(LAYOUT_TX_X,LAYOUT_TX_Y,LAYOUT_TX_WIDTH,LAYOUT_TX_HEIGHT,COLOR_BACKGROUND);
   }
 }
@@ -351,7 +353,6 @@ void updateBandButtons(const uint32_t old_freq)
   for(uint8_t i = 0; i < sizeof(bands)/sizeof(bands[0]); ++i){
     if(isFreqInBand(old_freq,bands[i]) != isFreqInBand(curr_freq,bands[i])){
       extractAndDrawButton(&button,band_buttons[i]);
-      morseBool(ButtonStatus_e::Active == button.status());
     }
   }
 }
@@ -415,9 +416,6 @@ void osVfo(const Vfo_e vfo){
 
   globalSettings.activeVfo = vfo;
   SaveSettingsToEeprom();
-
-  ltoa(GetActiveVfoFreq(),b,10);
-  morseText(b);
 
   Button button;
   extractAndDrawButton(&button,&bVfoA);

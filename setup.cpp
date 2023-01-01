@@ -2,7 +2,6 @@
 #include "colors.h"
 #include "encoder.h"
 #include "menu.h"
-#include "morse.h"
 #include "nano_gui.h"
 #include "pin_definitions.h"
 #include "scratch_space.h"
@@ -18,7 +17,7 @@
  *  a function button press. 
  *  - As the encoder is rotated, at every 10th pulse, the next or the previous menu
  *  item is displayed. Each menu item is controlled by it's own function.
- *  - Eache menu function may be called to display itself
+ *  - Each menu function may be called to display itself
  *  - Each of these menu routines is called with a button parameter. 
  *  - The btn flag denotes if the menu itme was clicked on or not.
  *  - If the menu item is clicked on, then it is selected,
@@ -308,7 +307,6 @@ void ssCwSwitchDelayChange(const long int new_value, char* buff_out, const size_
 {
   ltoa(new_value,buff_out,10);
   strncat_P(buff_out,(const char*)F("ms"),buff_out_size - strlen(buff_out));
-  morseText(buff_out);
   enc_read();//Consume any rotations during morse playback
 }
 void ssCwSwitchDelayFinalize(const long int final_value)
@@ -354,7 +352,6 @@ void ssKeyerChange(const long int new_value, char* buff_out, const size_t buff_o
     strncpy_P(buff_out,(const char*)F("Iambic B"),buff_out_size);
     m = 'B';
   }
-  morseLetter(m);
   enc_read();//Consume any rotations during morse playback
 }
 void ssKeyerFinalize(const long int final_value)
@@ -376,10 +373,10 @@ const SettingScreen_t ssKeyer PROGMEM = {
 };
 void runKeyerSetting(){activateSetting(&ssKeyer);}
 
-//Morse menu playback
+//Morse practice mode menu
 void ssMorseMenuInitialize(long int* start_value_out)
 {
-  *start_value_out = globalSettings.morseMenuOn;
+  *start_value_out = globalSettings.morsePracticeMode;
 }
 void ssMorseMenuValidate(const long int candidate_value_in, long int* validated_value_out)
 {
@@ -396,16 +393,14 @@ void ssMorseMenuChange(const long int new_value, char* buff_out, const size_t bu
     strncpy_P(buff_out,strNo,buff_out_size);
     m = 'N';
   }
-  morseLetter(m);
   enc_read();//Consume any rotations during morse playback
 }
 void ssMorseMenuFinalize(const long int final_value)
 {
-  globalSettings.morseMenuOn = final_value;
-  SaveSettingsToEeprom();
+  globalSettings.morsePracticeMode = final_value;
 }
-const char SS_MORSE_MENU_T [] PROGMEM = "Menu Audio";
-const char SS_MORSE_MENU_A [] PROGMEM = "Menu selections will play\nmorse code";
+const char SS_MORSE_MENU_T [] PROGMEM = "Morse practice";
+const char SS_MORSE_MENU_A [] PROGMEM = "The CW keyer won't\ntrigger TX";
 const SettingScreen_t ssMorseMenu PROGMEM = {
   SS_MORSE_MENU_T,
   SS_MORSE_MENU_A,
@@ -430,7 +425,6 @@ void ssCwSpeedValidate(const long int candidate_value_in, long int* validated_va
 void ssCwSpeedChange(const long int new_value, char* buff_out, const size_t /*buff_out_size*/)
 {
   ltoa(new_value, buff_out, 10);
-  morseText(buff_out,1200L/new_value);
   enc_read();//Consume any rotations during morse playback
 }
 void ssCwSpeedFinalize(const long int final_value)
@@ -472,7 +466,6 @@ void ssResetAllChange(const long int new_value, char* buff_out, const size_t buf
     strncpy_P(buff_out,strNo,buff_out_size);
     m = 'N';
   }
-  morseLetter(m);
   enc_read();//Consume any rotations during morse playback
 }
 void ssResetAllFinalize(const long int final_value)
@@ -650,17 +643,6 @@ MenuReturn_e runSetupMenu(const MenuItem_t* const menu_items,
     const int16_t new_index = setupMenuSelector/MENU_KNOB_COUNTS_PER_ITEM;
     if(cur_index != new_index){
       movePuck(cur_index,new_index);
-      if(globalSettings.morseMenuOn){//Only spend cycles copying menu item into RAM if we actually need to
-        if(exit_index <= cur_index){
-          strncpy_P(b,MI_EXIT,sizeof(b));
-        }
-        else{
-          MenuItem_t mi = {"",nullptr};
-          memcpy_P(&mi,&menu_items[cur_index+1],sizeof(mi));//The 0th element in the array is the title, so offset by 1
-          strncpy_P(b,mi.ItemName,sizeof(b));
-        }
-        morseText(b);
-      }
     }
   }
 

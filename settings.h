@@ -103,7 +103,7 @@ struct SettingsRam
   bool txActive;
   bool txCatActive;
   uint32_t cwExpirationTimeMs;
-  bool morseMenuOn;
+  bool morsePracticeMode;
 };
 
 //This is the shared declaration

@@ -7,7 +7,7 @@
 #include "si5351.h"
 
 /**
- * These are the "magic" indices where these user changable settinngs are stored in the EEPROM
+ * These are the "magic" indices where these user changeable settings are stored in the EEPROM
  */
 static const uint16_t EEPROM_ADDR_MASTER_CAL = 0;//int32_t
 //4 is currently unused, but may have been LSB_CAL on other versions
@@ -91,7 +91,7 @@ void LoadDefaultSettings()
   globalSettings.txActive = false;
   globalSettings.txCatActive = false;
   globalSettings.cwExpirationTimeMs = 0;
-  globalSettings.morseMenuOn = false;
+  globalSettings.morsePracticeMode = false;
 }
 
 void LoadSettingsFromEeprom()
@@ -109,8 +109,7 @@ void LoadSettingsFromEeprom()
   LoadSane(globalSettings.keyerMode,EEPROM_ADDR_CW_KEY_TYPE,KEYER_STRAIGHT,KEYER_IAMBIC_B);
 
   uint8_t morse_on = 0;
-  LoadSane(morse_on,EEPROM_ADDR_MORSE_MENU,(uint8_t)0,(uint8_t)1);
-  globalSettings.morseMenuOn = morse_on;
+  globalSettings.morsePracticeMode = morse_on;
 
   for(uint8_t i = 0; i < NUM_QUICKLIST_SETTINGS; ++i){
     LoadSane(globalSettings.quickList[i].frequency,EEPROM_ADDR_QUICKLIST_FREQ+(sizeof(uint32_t)*i),SI5351_MIN_FREQUENCY_HZ,SI5351_MAX_FREQUENCY_HZ);
@@ -142,7 +141,6 @@ void SaveSettingsToEeprom()
   EEPROM.put(EEPROM_ADDR_VFO_A_MODE,globalSettings.vfoA.mode);
   EEPROM.put(EEPROM_ADDR_VFO_B_MODE,globalSettings.vfoB.mode);
   EEPROM.put(EEPROM_ADDR_CW_KEY_TYPE,globalSettings.keyerMode);
-  EEPROM.put(EEPROM_ADDR_MORSE_MENU,(uint8_t)globalSettings.morseMenuOn);
 
   for(uint8_t i = 0; i < NUM_QUICKLIST_SETTINGS; ++i){
     EEPROM.put(EEPROM_ADDR_QUICKLIST_FREQ+(sizeof(uint32_t)*i),globalSettings.quickList[i].frequency);

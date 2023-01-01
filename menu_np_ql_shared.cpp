@@ -39,8 +39,7 @@ MenuReturn_e runNpQlShared(const ButtonPress_e tuner_button,
     adjustSelector(menuSelectedItemRaw,
                    knob,
                    menu_buttons,
-                   menu_num_buttons,
-                   MorsePlaybackType_e::PlayChar);
+                   menu_num_buttons);
   }
 
   if(ButtonPress_e::NotPressed == *selection_mode){

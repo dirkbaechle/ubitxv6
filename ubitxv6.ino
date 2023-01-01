@@ -33,7 +33,6 @@
 #include "encoder.h"
 #include "menu.h"
 #include "menu_main.h"
-#include "morse.h"
 #include "pin_definitions.h"
 #include "push_button.h"
 #include "nano_gui.h"

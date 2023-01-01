@@ -41,8 +41,7 @@ void initNumpad(void)
   drawNumpad();
   initSelector(&numpadMenuSelectedItemRaw,
                 numpadMenuButtons,
-                NUMPAD_MENU_NUM_BUTTONS,
-                MorsePlaybackType_e::PlayChar);
+                NUMPAD_MENU_NUM_BUTTONS);
 }
 
 MenuReturn_e runNumpad(const ButtonPress_e tuner_button,

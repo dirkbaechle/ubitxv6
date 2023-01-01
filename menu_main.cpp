@@ -7,7 +7,6 @@
 #include "button.h"
 #include "color_theme.h"
 #include "menu_utils.h"
-#include "morse.h"
 #include "nano_gui.h"
 #include "scratch_space.h"
 #include "settings.h"
@@ -41,9 +40,6 @@ void drawMainMenu(void)
   }
   drawVersion();
   drawCallsign();
-
-  ltoa(GetActiveVfoFreq(),b,10);
-  morseText(b);
 }
 
 void drawMainMenuIncrement()
@@ -135,8 +131,7 @@ MenuReturn_e runMainMenu(const ButtonPress_e tuner_button,
         else{
           initSelector(&mainMenuSelectedItemRaw,
                        mainMenuButtons,
-                       MAIN_MENU_NUM_BUTTONS,
-                       MorsePlaybackType_e::PlayChar);
+                       MAIN_MENU_NUM_BUTTONS);
         }
         mainMenuSelecting = !mainMenuSelecting;
 
@@ -146,13 +141,11 @@ MenuReturn_e runMainMenu(const ButtonPress_e tuner_button,
       }
       case ButtonPress_e::LongPress:
       {
-        if(!globalSettings.morseMenuOn){
-            globalSettings.morseMenuOn = true;//set before playing
-            morseLetter(2);
+        if(!globalSettings.morsePracticeMode){
+            globalSettings.morsePracticeMode = true;
         }
         else{
-            morseLetter(4);
-            globalSettings.morseMenuOn = false;//unset after playing
+            globalSettings.morsePracticeMode = false;
         }
         SaveSettingsToEeprom();
         //Don't handle touch or knob on this run
@@ -178,8 +171,7 @@ MenuReturn_e runMainMenu(const ButtonPress_e tuner_button,
       adjustSelector(&mainMenuSelectedItemRaw,
                      knob,
                      mainMenuButtons,
-                     MAIN_MENU_NUM_BUTTONS,
-                     MorsePlaybackType_e::PlayChar);
+                     MAIN_MENU_NUM_BUTTONS);
     }
     else{
       mainMenuTune(knob);

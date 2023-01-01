@@ -125,54 +125,60 @@ void setFrequency(const unsigned long freq,
  * startTx is called by the PTT, cw keyer and CAT protocol to
  * put the uBitx in tx mode. It takes care of rit settings, sideband settings
  * Note: In cw mode, doesnt key the radio, only puts it in tx mode
- * CW offest is calculated as lower than the operating frequency when in LSB mode, and vice versa in USB mode
+ * CW offset is calculated as lower than the operating frequency when in LSB mode, and vice versa in USB mode
  */
  
 void startTx(TuningMode_e tx_mode){
   globalSettings.tuningMode = tx_mode;
 
-  if (globalSettings.ritOn){
-    //save the current as the rx frequency
-    uint32_t rit_tx_freq = globalSettings.ritFrequency;
-    globalSettings.ritFrequency = GetActiveVfoFreq();
-    setFrequency(rit_tx_freq,true);
-  }
-  else{
-    if(globalSettings.splitOn){
-      if(Vfo_e::VFO_B == globalSettings.activeVfo){
-        globalSettings.activeVfo = Vfo_e::VFO_A;
-      }
-      else{
-        globalSettings.activeVfo = Vfo_e::VFO_B;
-      }
+  if (!globalSettings.morsePracticeMode) {
+    if (globalSettings.ritOn){
+      //save the current as the rx frequency
+      uint32_t rit_tx_freq = globalSettings.ritFrequency;
+      globalSettings.ritFrequency = GetActiveVfoFreq();
+      setFrequency(rit_tx_freq,true);
     }
-    setFrequency(GetActiveVfoFreq(),true);
-  }
+    else{
+      if(globalSettings.splitOn){
+        if(Vfo_e::VFO_B == globalSettings.activeVfo){
+          globalSettings.activeVfo = Vfo_e::VFO_A;
+        }
+        else{
+          globalSettings.activeVfo = Vfo_e::VFO_B;
+        }
+      }
+      setFrequency(GetActiveVfoFreq(),true);
+    }
 
-  digitalWrite(PIN_TX_RXn, 1);//turn on the tx
+    digitalWrite(PIN_TX_RXn, 1);//turn on the tx
+  }
   globalSettings.txActive = true;
   drawTx();
 }
 
 void stopTx(){
-  digitalWrite(PIN_TX_RXn, 0);//turn off the tx
+  if (!globalSettings.morsePracticeMode) {
+    digitalWrite(PIN_TX_RXn, 0);//turn off the tx
+  }
   globalSettings.txActive = false;
 
-  if(globalSettings.ritOn){
-    uint32_t rit_rx_freq = globalSettings.ritFrequency;
-    globalSettings.ritFrequency = GetActiveVfoFreq();
-    setFrequency(rit_rx_freq);
-  }
-  else{
-    if(globalSettings.splitOn){
-      if(Vfo_e::VFO_B == globalSettings.activeVfo){
-        globalSettings.activeVfo = Vfo_e::VFO_A;
-      }
-      else{
-        globalSettings.activeVfo = Vfo_e::VFO_B;
-      }
+  if (!globalSettings.morsePracticeMode) {
+    if(globalSettings.ritOn){
+      uint32_t rit_rx_freq = globalSettings.ritFrequency;
+      globalSettings.ritFrequency = GetActiveVfoFreq();
+      setFrequency(rit_rx_freq);
     }
-    setFrequency(GetActiveVfoFreq());
+    else{
+      if(globalSettings.splitOn){
+        if(Vfo_e::VFO_B == globalSettings.activeVfo){
+          globalSettings.activeVfo = Vfo_e::VFO_A;
+        }
+        else{
+          globalSettings.activeVfo = Vfo_e::VFO_B;
+        }
+      }
+      setFrequency(GetActiveVfoFreq());
+    }
   }
   drawTx();
 }
