@@ -14,3 +14,9 @@
 // 2 - the Americas
 // 3 - the rest of Asia and the Pacific
 #define IARU_REGION 2
+
+// Display CW speed as
+// 0 - words per minute (wpm)
+// 1 - chars per minute (cpm)
+// 2 - Buchstaben pro Minute (BpM, German special)
+#define DISPLAY_CW_SPEED 0

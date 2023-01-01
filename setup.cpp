@@ -11,6 +11,7 @@
 #include "si5351.h"
 #include "tuner.h"
 #include "utils.h"
+#include "config.h"
 
 /** Menus
  *  The Radio menus are accessed by tapping on the function button. 
@@ -426,24 +427,36 @@ void runMorseMenuSetting(){activateSetting(&ssMorseMenu);}
 //CW Speed
 void ssCwSpeedInitialize(long int* start_value_out)
 {
+  // Convert dot length in ms to wpm
   *start_value_out = 1200L/globalSettings.cwDitDurationMs;
 }
 void ssCwSpeedValidate(const long int candidate_value_in, long int* validated_value_out)
 {
-  *validated_value_out = LIMIT(candidate_value_in,1,100);
+  *validated_value_out = LIMIT(candidate_value_in,20,300); // 4 - 60 wpm
 }
 void ssCwSpeedChange(const long int new_value, char* buff_out, const size_t /*buff_out_size*/)
 {
+#if DISPLAY_CW_SPEED == 0
   ltoa(new_value, buff_out, 10);
+#else
+  ltoa(new_value * 5, buff_out, 10);
+#endif
   enc_read();//Consume any rotations during morse playback
 }
 void ssCwSpeedFinalize(const long int final_value)
 {
+  // Convert wpm back to a dot length in ms
   globalSettings.cwDitDurationMs = 1200L/final_value;
   SaveSettingsToEeprom();
 }
-const char SS_CW_SPEED_T [] PROGMEM = "Play Speed";
-const char SS_CW_SPEED_A [] PROGMEM = "Speed to play CW characters";
+const char SS_CW_SPEED_T [] PROGMEM = "CW Speed";
+#if DISPLAY_CW_SPEED == 2
+const char SS_CW_SPEED_A [] PROGMEM = "Keyer speed in BpM";
+#elif DISPLAY_CW_SPEED == 1
+const char SS_CW_SPEED_A [] PROGMEM = "Keyer speed in cpm";
+#else
+const char SS_CW_SPEED_A [] PROGMEM = "Keyer speed in wpm";
+#endif
 const SettingScreen_t ssCwSpeed PROGMEM = {
   SS_CW_SPEED_T,
   SS_CW_SPEED_A,
@@ -661,7 +674,11 @@ MenuReturn_e runSetupMenu(const MenuItem_t* const menu_items,
 
 void drawWpM()
 {
+#if DISPLAY_CW_SPEED == 0
   uint16_t value = 1200L/globalSettings.cwDitDurationMs;
+#else
+  uint16_t value = (1200L * 5)/globalSettings.cwDitDurationMs;
+#endif
   if (globalSettings.morsePracticeMode) {
     b[0] = 0;
     strncat_P(b,(const char*)F("("),1);
@@ -671,7 +688,13 @@ void drawWpM()
     ltoa(value, b, 10);
   }
   // Append unit
+#if DISPLAY_CW_SPEED == 2
+  strncat_P(b,(const char*)F("BpM"),3);
+#elif DISPLAY_CW_SPEED == 1
+  strncat_P(b,(const char*)F("cpm"),3);
+#else
   strncat_P(b,(const char*)F("wpm"),3);
+#endif
   displayFillrect(LAYOUT_MODE_TEXT_X,LAYOUT_MODE_TEXT_Y,LAYOUT_MODE_TEXT_WIDTH,LAYOUT_MODE_TEXT_HEIGHT, COLOR_TITLE_BACKGROUND);
   displayText(b,LAYOUT_MODE_TEXT_X, LAYOUT_MODE_TEXT_Y, LAYOUT_MODE_TEXT_WIDTH, LAYOUT_MODE_TEXT_HEIGHT,COLOR_TEXT, COLOR_TITLE_BACKGROUND, COLOR_TITLE_BACKGROUND, TextJustification_e::Left);
 }

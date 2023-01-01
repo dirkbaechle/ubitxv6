@@ -100,7 +100,7 @@ void LoadSettingsFromEeprom()
   LoadSane(globalSettings.vfoA.frequency,EEPROM_ADDR_VFO_A_FREQ,SI5351_MIN_FREQUENCY_HZ,SI5351_MAX_FREQUENCY_HZ);
   LoadSane(globalSettings.vfoB.frequency,EEPROM_ADDR_VFO_B_FREQ,SI5351_MIN_FREQUENCY_HZ,SI5351_MAX_FREQUENCY_HZ);
   LoadSane(globalSettings.cwSideToneFreq,EEPROM_ADDR_CW_SIDETONE,100UL,2000UL);
-  LoadSane(globalSettings.cwDitDurationMs,EEPROM_ADDR_CW_DIT_TIME,10U,1000U);
+  LoadSane(globalSettings.cwDitDurationMs,EEPROM_ADDR_CW_DIT_TIME,20U,300U);
   if(LoadSane(globalSettings.cwActiveTimeoutMs,EEPROM_ADDR_CW_DELAYTIME,10U,100U)){
     globalSettings.cwActiveTimeoutMs *= 10;//scale by 10 for legacy reasons
   }
