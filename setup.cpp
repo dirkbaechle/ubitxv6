@@ -1,4 +1,5 @@
 #include "toneAC2/toneAC2.h"
+#include <WString.h>//F()
 #include "colors.h"
 #include "encoder.h"
 #include "menu.h"
@@ -61,6 +62,15 @@ static const unsigned int LAYOUT_CONFIRM_TEXT_X = 20;
 static const unsigned int LAYOUT_CONFIRM_TEXT_Y = LAYOUT_ITEM_Y + 5*LAYOUT_ITEM_PITCH_Y;
 static const unsigned int LAYOUT_CONFIRM_TEXT_WIDTH = LAYOUT_ITEM_WIDTH;
 static const unsigned int LAYOUT_CONFIRM_TEXT_HEIGHT = LAYOUT_ITEM_HEIGHT;
+
+// For display of WpM in "mode" area
+static const unsigned int LAYOUT_VFO_LABEL_Y = 10;
+static const unsigned int LAYOUT_VFO_LABEL_HEIGHT = 36;
+static const unsigned int LAYOUT_TX_X = 280;
+static const unsigned int LAYOUT_MODE_TEXT_X = 160;
+static const unsigned int LAYOUT_MODE_TEXT_Y = LAYOUT_VFO_LABEL_Y + LAYOUT_VFO_LABEL_HEIGHT + 1;
+static const unsigned int LAYOUT_MODE_TEXT_WIDTH = LAYOUT_TX_X - 1 - LAYOUT_MODE_TEXT_X;
+static const unsigned int LAYOUT_MODE_TEXT_HEIGHT = 36;
 
 constexpr char strYes [] PROGMEM = "Yes";
 constexpr char strNo [] PROGMEM = "No";
@@ -400,7 +410,7 @@ void ssMorseMenuFinalize(const long int final_value)
   globalSettings.morsePracticeMode = final_value;
 }
 const char SS_MORSE_MENU_T [] PROGMEM = "Morse practice";
-const char SS_MORSE_MENU_A [] PROGMEM = "The CW keyer won't\ntrigger TX";
+const char SS_MORSE_MENU_A [] PROGMEM = "The CW keyer won't transmit";
 const SettingScreen_t ssMorseMenu PROGMEM = {
   SS_MORSE_MENU_T,
   SS_MORSE_MENU_A,
@@ -647,4 +657,21 @@ MenuReturn_e runSetupMenu(const MenuItem_t* const menu_items,
   }
 
   return MenuReturn_e::StillActive;
+}
+
+void drawWpM()
+{
+  uint16_t value = 1200L/globalSettings.cwDitDurationMs;
+  if (globalSettings.morsePracticeMode) {
+    b[0] = 0;
+    strncat_P(b,(const char*)F("("),1);
+    ltoa(value, b+1, 10);
+    strncat_P(b,(const char*)F(") "),2);
+  } else {
+    ltoa(value, b, 10);
+  }
+  // Append unit
+  strncat_P(b,(const char*)F("wpm"),3);
+  displayFillrect(LAYOUT_MODE_TEXT_X,LAYOUT_MODE_TEXT_Y,LAYOUT_MODE_TEXT_WIDTH,LAYOUT_MODE_TEXT_HEIGHT, COLOR_TITLE_BACKGROUND);
+  displayText(b,LAYOUT_MODE_TEXT_X, LAYOUT_MODE_TEXT_Y, LAYOUT_MODE_TEXT_WIDTH, LAYOUT_MODE_TEXT_HEIGHT,COLOR_TEXT, COLOR_TITLE_BACKGROUND, COLOR_TITLE_BACKGROUND, TextJustification_e::Left);
 }

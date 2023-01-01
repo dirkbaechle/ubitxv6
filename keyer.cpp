@@ -107,10 +107,9 @@ void cwKeyer(void){
   bool continue_loop = true;
   char tmpKeyControl = 0;
   
-  if((KeyerMode_e::KEYER_STRAIGHT == globalSettings.keyerMode)
-    || (digitalRead(PIN_PTT) == 0)){//use the PTT as the key for tune up, quick QSOs
+  if(KeyerMode_e::KEYER_STRAIGHT == globalSettings.keyerMode){
     while(1){
-      tmpKeyControl = update_PaddleLatch(0) | (digitalRead(PIN_PTT)?0:DIT_L);
+      tmpKeyControl = update_PaddleLatch(0);
       //Serial.println((int)tmpKeyControl);
       if ((tmpKeyControl & DIT_L) == DIT_L) {
         // if we are here, it is only because the key is pressed
@@ -121,7 +120,7 @@ void cwKeyer(void){
         cwKeydown();
         
         while ( tmpKeyControl & DIT_L == DIT_L){
-          tmpKeyControl = update_PaddleLatch(0) | (digitalRead(PIN_PTT)?0:DIT_L);
+          tmpKeyControl = update_PaddleLatch(0);
           //Serial.println((int)tmpKeyControl);
         }
           

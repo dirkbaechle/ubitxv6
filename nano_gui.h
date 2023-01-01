@@ -20,6 +20,7 @@ void displayText(const char *const text, int x1, int y1, int w, int h, int color
 
 /* these functions are called universally to update the display */
 void drawTx();
+void drawWpM();
 
 #define TEXT_LINE_HEIGHT 18
 #define TEXT_LINE_INDENT 5

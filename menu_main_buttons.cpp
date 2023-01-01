@@ -27,7 +27,7 @@ static const unsigned int LAYOUT_VFO_LABEL_PITCH_X = 160;
 
 static const unsigned int LAYOUT_MODE_TEXT_X = 0;
 static const unsigned int LAYOUT_MODE_TEXT_Y = LAYOUT_VFO_LABEL_Y + LAYOUT_VFO_LABEL_HEIGHT + 1;
-static const unsigned int LAYOUT_MODE_TEXT_WIDTH = 320;
+static const unsigned int LAYOUT_MODE_TEXT_WIDTH = 159;
 static const unsigned int LAYOUT_MODE_TEXT_HEIGHT = 36;
 
 static const unsigned int LAYOUT_BUTTON_X = 2;
@@ -54,15 +54,19 @@ static const unsigned int LAYOUT_TX_HEIGHT = 36;
 
 void drawTx()
 {
+  strncpy_P(b,(const char*)F("TX"),sizeof(b));
   if (globalSettings.txActive){
-    strncpy_P(b,(const char*)F("TX"),sizeof(b));
+    // We're currently sending...
     if (globalSettings.morsePracticeMode) {
+      // ... but in practice mode.
       displayText(b,LAYOUT_TX_X,LAYOUT_TX_Y,LAYOUT_TX_WIDTH,LAYOUT_TX_HEIGHT,DISPLAY_ORANGE,DISPLAY_OLIVE,COLOR_BACKGROUND);
     } else {
+      // ... for real.
       displayText(b,LAYOUT_TX_X,LAYOUT_TX_Y,LAYOUT_TX_WIDTH,LAYOUT_TX_HEIGHT,COLOR_ACTIVE_TEXT,COLOR_ACTIVE_BACKGROUND,COLOR_BACKGROUND);
     }
   } else {
-    displayFillrect(LAYOUT_TX_X,LAYOUT_TX_Y,LAYOUT_TX_WIDTH,LAYOUT_TX_HEIGHT,COLOR_BACKGROUND);
+    // Not sending
+    displayText(b,LAYOUT_TX_X,LAYOUT_TX_Y,LAYOUT_TX_WIDTH,LAYOUT_TX_HEIGHT,DISPLAY_DARKGREY,DISPLAY_LIGHTGREY,COLOR_BACKGROUND);
   }
 }
 
@@ -455,12 +459,7 @@ void osRit(){
 
     strncpy_P(b,(const char*)F("TX: "),sizeof(b));
     formatFreq(globalSettings.ritFrequency, b + strlen(b), sizeof(b)-strlen(b));
-    if (VFO_A == globalSettings.activeVfo){
-      displayText(b, LAYOUT_VFO_LABEL_X + 0*LAYOUT_VFO_LABEL_PITCH_X, LAYOUT_MODE_TEXT_Y, LAYOUT_VFO_LABEL_WIDTH, LAYOUT_MODE_TEXT_HEIGHT, COLOR_TEXT, COLOR_BACKGROUND, COLOR_BACKGROUND, TextJustification_e::Left);
-    }
-    else{
-      displayText(b, LAYOUT_VFO_LABEL_X + 1*LAYOUT_VFO_LABEL_PITCH_X, LAYOUT_MODE_TEXT_Y, LAYOUT_VFO_LABEL_WIDTH, LAYOUT_MODE_TEXT_HEIGHT, COLOR_TEXT, COLOR_BACKGROUND, COLOR_BACKGROUND, TextJustification_e::Left);
-    }
+    displayText(b, LAYOUT_VFO_LABEL_X + 0*LAYOUT_VFO_LABEL_PITCH_X, LAYOUT_MODE_TEXT_Y, LAYOUT_VFO_LABEL_WIDTH, LAYOUT_MODE_TEXT_HEIGHT, COLOR_TEXT, COLOR_BACKGROUND, COLOR_BACKGROUND, TextJustification_e::Left);
   }
   else{
     globalSettings.ritOn = false;

@@ -12,6 +12,7 @@
 #include "settings.h"
 #include "tuner.h"//THRESHOLD_USB_LSB
 #include "utils.h"
+#include "setup.h"
 
 void drawMainMenu(void);
 MenuReturn_e runMainMenu(const ButtonPress_e tuner_button,
@@ -40,6 +41,8 @@ void drawMainMenu(void)
   }
   drawVersion();
   drawCallsign();
+  drawWpM();
+  drawTx();
 }
 
 void drawMainMenuIncrement()
@@ -50,6 +53,7 @@ void drawMainMenuIncrement()
   static VfoMode_e last_mode = VfoMode_e::VFO_MODE_LSB;
   static bool last_split = false;
   static bool last_rit = false;
+  static uint16_t last_cw_duration = 0;
   static TuningMode_e last_tuning = TuningMode_e::TUNE_SSB;
 
   Button button;
@@ -86,6 +90,11 @@ void drawMainMenuIncrement()
   if(last_tuning != globalSettings.tuningMode){
     extractAndDrawButton(&button,&bCw);
     last_tuning = globalSettings.tuningMode;
+  }
+
+  if(last_cw_duration != globalSettings.cwDitDurationMs){
+    drawWpM();
+    last_cw_duration = globalSettings.cwDitDurationMs;
   }
 }
 
@@ -141,13 +150,7 @@ MenuReturn_e runMainMenu(const ButtonPress_e tuner_button,
       }
       case ButtonPress_e::LongPress:
       {
-        if(!globalSettings.morsePracticeMode){
-            globalSettings.morsePracticeMode = true;
-        }
-        else{
-            globalSettings.morsePracticeMode = false;
-        }
-        SaveSettingsToEeprom();
+        runCwSpeedSetting();
         //Don't handle touch or knob on this run
         return MenuReturn_e::StillActive;//main menu always returns StillActive
         break;
