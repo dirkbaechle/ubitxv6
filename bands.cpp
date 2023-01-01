@@ -2,6 +2,7 @@
 
 #include "bands.h"
 #include "utils.h"
+#include "config.h"
 
 /*
  * These are the bands for USA. Your bands may vary
