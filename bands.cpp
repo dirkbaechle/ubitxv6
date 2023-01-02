@@ -104,25 +104,15 @@ uint32_t getFreqInBand(const uint32_t frequency,
     return frequency;
   }
 
-  //See if we're currrently in a valid band
-  int8_t current_band_index = findBandIndexFromFreq(frequency);
-
-  if(-1 == current_band_index){
-    //We're not in a known band - just go to the center of the target band
-    Band_t band;
-    memcpy_P(&band,&bands[target_band_index],sizeof(band));
-    return band.min + ((band.max - band.min)/2/100)*100;//midpoint truncated to 100Hz resolution
-  }
-  else{
-    //We're in a known band. Match the relative position in the target band.
-    Band_t current_band;
-    memcpy_P(&current_band,&bands[current_band_index],sizeof(current_band));
-    Band_t target_band;
-    memcpy_P(&target_band,&bands[target_band_index],sizeof(target_band));
-    const uint32_t range_current = current_band.max - current_band.min;
-    const uint32_t range_target = target_band.max - target_band.min;
-    return (((frequency - current_band.min) * (uint64_t)range_target / range_current + target_band.min)/100)*100;//truncated 100Hz
-  }
+  Band_t band;
+  memcpy_P(&band,&bands[target_band_index],sizeof(band));
+#if CW_IS_DEFAULT == 0
+  // go to the center of the target band
+  return band.min + ((band.max - band.min)/2/100)*100;//midpoint truncated to 100Hz resolution
+#else
+  // for CW we prefer the start of each band
+  return band.min;
+#endif
 }
 
 bool isFreqInBand(const uint32_t frequency,

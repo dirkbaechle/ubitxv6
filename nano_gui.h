@@ -15,12 +15,14 @@ void displayHline(unsigned int x, unsigned int y, unsigned int l, unsigned int c
 void displayVline(unsigned int x, unsigned int y, unsigned int l, unsigned int c);
 void displayRect(unsigned int x,unsigned int y,unsigned int w,unsigned int h,unsigned int c);
 void displayFillrect(unsigned int x,unsigned int y,unsigned int w,unsigned int h,unsigned int c);
+void displayFillcircle(unsigned int x, unsigned int y, unsigned int r, unsigned int c);
 void displayChar(int16_t x, int16_t y, unsigned char c, uint16_t color, uint16_t bg);
 void displayText(const char *const text, int x1, int y1, int w, int h, int color, int background, int border, TextJustification_e justification = TextJustification_e::Center);
 
 /* these functions are called universally to update the display */
 void drawTx();
 void drawWpM();
+void drawTuningStepSize();
 
 #define TEXT_LINE_HEIGHT 18
 #define TEXT_LINE_INDENT 5

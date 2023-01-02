@@ -73,6 +73,12 @@ static const unsigned int LAYOUT_MODE_TEXT_Y = LAYOUT_VFO_LABEL_Y + LAYOUT_VFO_L
 static const unsigned int LAYOUT_MODE_TEXT_WIDTH = LAYOUT_TX_X - 1 - LAYOUT_MODE_TEXT_X;
 static const unsigned int LAYOUT_MODE_TEXT_HEIGHT = 36;
 
+// For the display of the tuning step size
+static const unsigned int LAYOUT_TUNING_STEP_SIZE_WIDTH = 20;
+static const unsigned LAYOUT_TUNING_STEP_DISTANCE = 10;
+static const unsigned LAYOUT_TUNING_STEP_RADIUS = 3;
+
+
 constexpr char strYes [] PROGMEM = "Yes";
 constexpr char strNo [] PROGMEM = "No";
 constexpr char strHz [] PROGMEM = "Hz";
@@ -697,4 +703,24 @@ void drawWpM()
 #endif
   displayFillrect(LAYOUT_MODE_TEXT_X,LAYOUT_MODE_TEXT_Y,LAYOUT_MODE_TEXT_WIDTH,LAYOUT_MODE_TEXT_HEIGHT, COLOR_TITLE_BACKGROUND);
   displayText(b,LAYOUT_MODE_TEXT_X, LAYOUT_MODE_TEXT_Y, LAYOUT_MODE_TEXT_WIDTH, LAYOUT_MODE_TEXT_HEIGHT,COLOR_TEXT, COLOR_TITLE_BACKGROUND, COLOR_TITLE_BACKGROUND, TextJustification_e::Left);
+}
+
+void drawTuningStepSize()
+{
+  displayFillrect(LAYOUT_MODE_TEXT_X - LAYOUT_TUNING_STEP_SIZE_WIDTH/2,0,LAYOUT_TUNING_STEP_SIZE_WIDTH,LAYOUT_VFO_LABEL_Y + LAYOUT_VFO_LABEL_HEIGHT, COLOR_TITLE_BACKGROUND);
+  // Always draw first dot
+  displayFillcircle(LAYOUT_MODE_TEXT_X + LAYOUT_TUNING_STEP_RADIUS + 1, 1 * LAYOUT_TUNING_STEP_DISTANCE, LAYOUT_TUNING_STEP_RADIUS, COLOR_TEXT);
+
+  if (globalSettings.tuningStepSize > 10) {
+    // Draw second dot
+    displayFillcircle(LAYOUT_MODE_TEXT_X + LAYOUT_TUNING_STEP_RADIUS + 1, 2 * LAYOUT_TUNING_STEP_DISTANCE, LAYOUT_TUNING_STEP_RADIUS, COLOR_TEXT);
+  }
+  if (globalSettings.tuningStepSize > 20) {
+    // Draw third dot
+    displayFillcircle(LAYOUT_MODE_TEXT_X + LAYOUT_TUNING_STEP_RADIUS + 1, 3 * LAYOUT_TUNING_STEP_DISTANCE, LAYOUT_TUNING_STEP_RADIUS, COLOR_TEXT);
+  }
+  if (globalSettings.tuningStepSize > 50) {
+    // Draw fourth dot
+    displayFillcircle(LAYOUT_MODE_TEXT_X + LAYOUT_TUNING_STEP_RADIUS + 1, 4 * LAYOUT_TUNING_STEP_DISTANCE, LAYOUT_TUNING_STEP_RADIUS, COLOR_TEXT);
+  }
 }

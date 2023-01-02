@@ -1,6 +1,6 @@
 /*
  * This class deals with all of the radio settings,
- * so that other areas of the code doesn't have to
+ * so that other areas of the code don't have to
  * 
  * Example usage:
  *   LoadSettingsFromEeprom();
@@ -80,6 +80,7 @@ struct SettingsRam
   Vfo_e activeVfo;
   VfoSettings_t vfoA;
   VfoSettings_t vfoB;
+  int16_t tuningStepSize;
 
   VfoSettings_t quickList[4];
 

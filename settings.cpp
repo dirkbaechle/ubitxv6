@@ -66,6 +66,7 @@ void LoadDefaultSettings()
   globalSettings.vfoA.mode = VFO_MODE_LSB;
   globalSettings.vfoB.frequency = 14150000UL;
   globalSettings.vfoB.mode = VFO_MODE_USB;
+  globalSettings.tuningStepSize = 50;
 
   for(uint8_t i = 0; i < NUM_QUICKLIST_SETTINGS; ++i){
     globalSettings.quickList[i].frequency = i*1000000;

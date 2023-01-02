@@ -66,6 +66,10 @@ void displayFillrect(unsigned int x,unsigned int y,unsigned int w,unsigned int h
   tft.fillRect(x,y,w,h,c);
 }
 
+void displayFillcircle(unsigned int x, unsigned int y, unsigned int r, unsigned int c){
+  tft.fillCircle(x, y, r, c);
+}
+
 void displayChar(int16_t x, int16_t y, unsigned char c, uint16_t color, uint16_t bg) {
   tft.drawCharGFX(x,y,c,color,bg,1);
 }

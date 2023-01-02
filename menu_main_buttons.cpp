@@ -21,7 +21,7 @@
 
 static const unsigned int LAYOUT_VFO_LABEL_X = 0;
 static const unsigned int LAYOUT_VFO_LABEL_Y = 10;
-static const unsigned int LAYOUT_VFO_LABEL_WIDTH = 159;
+static const unsigned int LAYOUT_VFO_LABEL_WIDTH = 149;
 static const unsigned int LAYOUT_VFO_LABEL_HEIGHT = 36;
 static const unsigned int LAYOUT_VFO_LABEL_PITCH_X = 160;
 
@@ -51,6 +51,8 @@ static const unsigned int LAYOUT_TX_X = 280;
 static const unsigned int LAYOUT_TX_Y = LAYOUT_MODE_TEXT_Y;
 static const unsigned int LAYOUT_TX_WIDTH = 40;
 static const unsigned int LAYOUT_TX_HEIGHT = 36;
+
+static const unsigned int LAYOUT_TUNING_STEP_SIZE_WIDTH = 20;
 
 void drawTx()
 {
@@ -101,7 +103,7 @@ void toVfoB(char* text_out, const uint16_t max_text_size);
 ButtonStatus_e bsVfoB();
 void osVfoB();
 constexpr Button bVfoB PROGMEM = {
-  LAYOUT_VFO_LABEL_X + 1*LAYOUT_VFO_LABEL_PITCH_X,
+  LAYOUT_VFO_LABEL_X + 1*LAYOUT_VFO_LABEL_PITCH_X + LAYOUT_TUNING_STEP_SIZE_WIDTH,
   LAYOUT_VFO_LABEL_Y,
   LAYOUT_VFO_LABEL_WIDTH,
   LAYOUT_VFO_LABEL_HEIGHT,

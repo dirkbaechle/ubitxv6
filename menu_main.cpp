@@ -39,6 +39,7 @@ void drawMainMenu(void)
     memcpy_P(&bp, &(mainMenuButtons[i]), sizeof(bp));
     extractAndDrawButton(&button,bp);
   }
+  drawTuningStepSize();
   drawVersion();
   drawCallsign();
   drawWpM();
@@ -51,6 +52,7 @@ void drawMainMenuIncrement()
   static uint32_t last_freq = 0;
   static Vfo_e last_vfo = Vfo_e::VFO_A;
   static VfoMode_e last_mode = VfoMode_e::VFO_MODE_LSB;
+  static uint16_t last_tuning_step = 0;
   static bool last_split = false;
   static bool last_rit = false;
   static uint16_t last_cw_duration = 0;
@@ -68,6 +70,11 @@ void drawMainMenuIncrement()
     
     //We set this here so that we're always hearing what's displayed
     setFrequency(last_freq);
+  }
+
+  if(last_tuning_step != globalSettings.tuningStepSize){
+    drawTuningStepSize();
+    last_tuning_step = globalSettings.tuningStepSize;
   }
 
   if(last_mode != GetActiveVfoMode()){
@@ -106,8 +113,14 @@ void mainMenuTune(int16_t knob)
   }
 
   const uint32_t current_freq = GetActiveVfoFreq();
-  const uint32_t new_freq = current_freq + (50 * knob);
-  
+  uint32_t new_freq = current_freq + (globalSettings.tuningStepSize * knob);
+  // Ensure that we're in the given step size grid
+  if (knob > 0) {
+    new_freq -= new_freq % globalSettings.tuningStepSize;
+  } else {
+    new_freq += new_freq % globalSettings.tuningStepSize;
+  }
+
   SetActiveVfoFreq(new_freq);
   autoSelectSidebandChanged(current_freq);
 }
@@ -128,6 +141,25 @@ MenuReturn_e runMainMenu(const ButtonPress_e tuner_button,
       }
       case ButtonPress_e::ShortPress:
       {
+        if(!mainMenuSelecting){
+          // Increase tuning step size
+          switch (globalSettings.tuningStepSize) {
+            case 10: globalSettings.tuningStepSize = 20;
+                      break;
+            case 20: globalSettings.tuningStepSize = 50;
+                      break;
+            case 50: globalSettings.tuningStepSize = 100;
+                      break;
+            default: globalSettings.tuningStepSize = 10;
+                      break;
+          }
+        }
+        //Don't handle touch or knob on this run
+        return MenuReturn_e::StillActive;//main menu always returns StillActive
+        break;
+      }
+      case ButtonPress_e::LongPress:
+      {
         if(mainMenuSelecting){
           uint8_t menu_index = mainMenuSelectedItemRaw/MENU_KNOB_COUNTS_PER_ITEM;
           Button button;
@@ -144,13 +176,6 @@ MenuReturn_e runMainMenu(const ButtonPress_e tuner_button,
         }
         mainMenuSelecting = !mainMenuSelecting;
 
-        //Don't handle touch or knob on this run
-        return MenuReturn_e::StillActive;//main menu always returns StillActive
-        break;
-      }
-      case ButtonPress_e::LongPress:
-      {
-        runCwSpeedSetting();
         //Don't handle touch or knob on this run
         return MenuReturn_e::StillActive;//main menu always returns StillActive
         break;
@@ -182,6 +207,6 @@ MenuReturn_e runMainMenu(const ButtonPress_e tuner_button,
   }
 
   drawMainMenuIncrement();
-
+ 
   return MenuReturn_e::StillActive;//main menu always returns StillActive
 }
