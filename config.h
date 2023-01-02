@@ -20,3 +20,8 @@
 // 1 - chars per minute (cpm)
 // 2 - Buchstaben pro Minute (BpM, German special)
 #define DISPLAY_CW_SPEED 0
+
+// Sets the default tuning mode to
+// 0 - SSB
+// 1 - CW
+#define CW_IS_DEFAULT 0

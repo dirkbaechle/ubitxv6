@@ -5,6 +5,7 @@
 #include "nano_gui.h"//redrawVFOs() function
 #include "settings.h"
 #include "si5351.h"
+#include "config.h"
 
 /**
  * These are the "magic" indices where these user changeable settings are stored in the EEPROM
@@ -83,9 +84,11 @@ void LoadDefaultSettings()
 
   globalSettings.ritOn = false;
   globalSettings.ritFrequency = globalSettings.vfoA.frequency;
-
+#if CW_IS_DEFAULT == 0
   globalSettings.tuningMode = TuningMode_e::TUNE_SSB;
-
+#else
+  globalSettings.tuningMode = TuningMode_e::TUNE_CW;
+#endif
   globalSettings.splitOn = false;
 
   globalSettings.txActive = false;
