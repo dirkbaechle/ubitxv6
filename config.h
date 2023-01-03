@@ -25,3 +25,10 @@
 // 0 - SSB
 // 1 - CW
 #define CW_IS_DEFAULT 0
+
+// Sets the default tuning step size to
+// 0 - 10Hz
+// 1 - 20Hz
+// 2 - 50Hz
+// 3 - 100Hz
+#define DEFAULT_TUNING_STEP_SIZE 2
