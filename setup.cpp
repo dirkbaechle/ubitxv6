@@ -417,7 +417,7 @@ void ssMorseMenuFinalize(const long int final_value)
   globalSettings.morsePracticeMode = final_value;
 }
 const char SS_MORSE_MENU_T [] PROGMEM = "Morse practice";
-const char SS_MORSE_MENU_A [] PROGMEM = "The CW keyer won't transmit";
+const char SS_MORSE_MENU_A [] PROGMEM = "Mute the TX line\nwhile keying";
 const SettingScreen_t ssMorseMenu PROGMEM = {
   SS_MORSE_MENU_T,
   SS_MORSE_MENU_A,
