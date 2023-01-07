@@ -8,27 +8,6 @@
 
 void drawButton(Button* button)
 {
-  uint16_t tc = COLOR_INACTIVE_TEXT;
-  uint16_t bgc = COLOR_INACTIVE_BACKGROUND;
-  const uint16_t bdc = COLOR_INACTIVE_BORDER;
-  switch(button->status())
-  {
-    case ButtonStatus_e::Stateless://Fallthrough intended
-    case ButtonStatus_e::Inactive://Fallthrough intended
-    default:
-    {
-      //Colors are initialized for this, so we're done
-      break;
-    }
-    case ButtonStatus_e::Active:
-    {
-      tc = COLOR_ACTIVE_TEXT;
-      bgc = COLOR_ACTIVE_BACKGROUND;
-      break;
-    }
-  }
-
-
   if(nullptr != button->text){
     strncpy_P(b,button->text,sizeof(b));
   }
@@ -40,7 +19,22 @@ void drawButton(Button* button)
     //Serial.println(F("No text for button!"));
     return;
   }
-  displayText(b, button->x, button->y, button->w, button->h, tc, bgc, bdc);
+#if GUI_THEME == 0
+  if (button->status() == ButtonStatus_e::Active) {
+    displayText(b, button->x, button->y, button->w, button->h, COLOR_ACTIVE_TEXT, COLOR_ACTIVE_BACKGROUND, COLOR_INACTIVE_BORDER);
+  } else {
+    displayText(b, button->x, button->y, button->w, button->h, COLOR_INACTIVE_TEXT, COLOR_INACTIVE_BACKGROUND, COLOR_INACTIVE_BORDER);
+  }
+#else
+  displayFillrect(button->x, button->y, button->w, button->h, COLOR_BACKGROUND);
+  if (button->status() == ButtonStatus_e::Active) {
+    displayFillroundrect(button->x, button->y, button->w, button->h, button->h/2, COLOR_ACTIVE_BACKGROUND);
+    displayText(b, button->x, button->y, button->w, button->h, COLOR_ACTIVE_TEXT, COLOR_ACTIVE_BACKGROUND, COLOR_ACTIVE_BACKGROUND);
+  } else {
+    displayText(b, button->x, button->y, button->w, button->h, COLOR_INACTIVE_TEXT, COLOR_INACTIVE_BACKGROUND, COLOR_INACTIVE_BACKGROUND);
+    displayRoundrect(button->x, button->y, button->w, button->h, button->h/2, COLOR_INACTIVE_TEXT);
+  }
+#endif
 }
 
 void extractAndDrawButton(Button* button_out, const Button* button_P)

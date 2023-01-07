@@ -1,4 +1,9 @@
 // Color definitions
+//
+// Note that the colors are stored with 5 bit for each
+// component of R, G and B. When expanding a uint16_t
+// like 0x001F (for BLUE), the 5 bit get shifted left
+// by 3 places (multiplied by 8), and then 0x7 gets added!
 static const uint16_t DISPLAY_BLACK       = 0x0000;  ///<   0,   0,   0
 static const uint16_t DISPLAY_NAVY        = 0x000F;  ///<   0,   0, 123
 static const uint16_t DISPLAY_DARKGREEN   = 0x03E0;  ///<   0, 125,   0

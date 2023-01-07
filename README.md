@@ -1,67 +1,51 @@
-# uBiTXv6
+# uBiTXv6 - modified by DL9OBN
 
-This project is found at https://github.com/reedbn/ubitxv6/
-
-It was forked from https://github.com/afarhan/ubitxv6/
-
-The purpose of this project is to clean up (modularize) the source code, and add features that were not present
-in Ashhar's original version of the project, without requiring any hardware modifications to a stock uBiTXv6.
+The purpose of this fork is to adapt Reed Nightingale's very good and valuable work to my personal needs. While adding new functionality
+I focused on my main operating mode: CW.
 
 New features include:
 
-* Much faster screen refresh (vs Ashhar's 6.3.1 aka 6.0 release)
-* Morse code readback for sightless operation
-* Save/recall your favorite frequencies
-* When adjusting settings, the existing/current setting is shown as reference
-* Cancel touch recalibration
+* A morse practice mode is available, where the TX line is muted while keying CW. The "CW audio mode" has been removed for this.
+* Removed the option for "keying" with the PTT key, straight keys or paddles are to be used for this exclusively.
+* Tuning step size can be changed with a short tune button press in the main menu. The tuning step size changes between 10Hz - 20Hz - 50Hz - 100Hz and is displayed by little circles, in the middle between the two VFO frequencies. The "menu selection" mode, where a button is selected by the tune knob, can be entered and confirmed with a long button press of the tune button now.
+* When the uBitX is started in CW mode (see `CW_IS_DEFAULT` config value below), the minimum frequency for each band will be used as start frequency.
+* Simplified the setting of start frequency when changing bands (mainly to save some memory)
+* Added support for setting the min/max frequencies of all bands, based on the configured IARU region (1/2/3)
+* Added display of current CW speed in the main screen. Since we need the space, the RIT frequency is now always displayed directly under "VFO A".
+* The "TX" button is now always visible and simply changes its colour when the uBitX goes into "TX" mode.
+* Added support for a different GUI theme, which is more based on "Google Materials" (rounded buttons and such). In order for the program to still fit, I had to remove the "calibration" options from the setup menu and had to disable CAT support!
 
-User Manual: https://docs.google.com/document/d/1jlllZbvFMCzO1MJLzlJDGb10HXSehlFNMDPsxGJZtvY/edit?usp=drivesdk
-
-# Installing on Your Radio
+# Installing on your radio
 
 There are plenty of tutorials on how to upload sketches to Arduino Nanos. Just search for them. Addtionally,
 Ashhar created a video explaining the process specifically for uBiTX v6: https://www.youtube.com/watch?v=3n_V3prSJ_E
 
-I developed this code using the Arduino IDE 1.8.9 toolchain, with -Wall and -Wextra compiler options turned on.
-Arduino IDE 1.8.13 was reported to compile too big (see https://groups.io/g/BITX20/topic/75008576), but this
-should be resolved in this project's tag R1.5.1.
+# Personalized config values
 
-# Personalized Callsign
+To edit e.g. the callsign displayed, open the file `config.h` and change the defines of the config values (defines)
 
-To edit the callsign displayed, open the file `callsign.cpp` and change the string. Then re-compile and upload.
+<dl>
+<dt>CALLSIGN_TEXT</dt>
+<dd>Your callsign as it should be displayed in the main screen.</dd>
 
-# Future Features/Modifications
+<dt>IARU_REGION</dt>
+<dd>Sets the limit frequencies (min/max) for all bands according to regulations for regions 1, 2 and 3.</dd>
 
-There are some features that would be good to add, but I just didn't get around to.
+<dt>DISPLAY_CW_SPEED</dt>
+<dd>Change whether you want to display the current CW speed as "wpm", "cpm" or "BpM".</dd>
 
-* Setting to choose the tuning step size
-* Setting to choose whether or not the knob tuning should accelerate (current behavior) or have a fixed interval
-* Provide an option in each menu screen to load the default option for each setting
+<dt>CW_IS_DEFAULT</dt>
+<dd>If set to "1", the uBitX will start up in CW mode.</dd>
 
-While the current code (as of 2020-05-05) is ~100 bytes shy of the full 30720 available on the nano, there's still
-opportunity to add new features by "creating" room. Below is a list of places you might create room:
+<dt>DEFAULT_TUNING_STEP_SIZE</dt>
+<dd>Set the default tuning step size (10Hz, 20Hz, 50Hz or 100Hz).</dd>
+</dl>
 
-I added lots of bounds checking, especially on string writes, that, if removed, could free a good number of bytes.
-While keeping them is best practice, for a non-IoT, non-critical piece of hardware, it shouldn't be a huge issue.
+<dt>GUI_THEME</dt>
+<dd>Set the GUI theming to either "0" (the default) or "1" (Google materials style). Be aware that for the latter option, the calibration and CAT functionalities had to be removed and aren't available!</dd>
+</dl>
 
-I added the RACK to the CAT to better emulate the FT-817 (I hope, at least!). Removing the RACK's and just leaving
-the default ACK's will also free up bytes.
-
-I added a bunch of strings to the menuing with the intention of helping people understand their functions, but
-technically they're not necessary, and could all be removed.
-
-I switched to a smaller footprint font than Ashhar's original code, but there are MUCH smaller fonts out there.
-Changing to a lower resolution, scaled up font can save hundreds or thousands of bytes, but won't look as pretty.
-Also, the star, gear, and numpad icons will need to be either added to the new font, or replaced with characters.
-
-The first change I made to this fork was to replace Ashhar's original (incredibly slow) screen drawing routines
-with PDQ. Since that change, Ashhar has updated his drawing routine to be MUCH faster than his original, but
-still slightly slower than PDQ. It may be that Ashhar's new routines are smaller that PDQ, but I don't actually
-know that for certain.
-
-There are a good number of instances of back-to-back calls of strncpy_P and displayText. Creating a single
-function that performs these operations together, and then calling that new function instead of the
-back-to-back calls everywhere may save space.
+ Then re-compile and upload.
 
 # License
 

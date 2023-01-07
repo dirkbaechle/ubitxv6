@@ -2,6 +2,7 @@
 #include "pin_definitions.h"
 #include "settings.h"
 #include "tuner.h"
+#include "config.h"
 
 /**
  CW Keyer
@@ -133,8 +134,9 @@ void cwKeyer(void){
         }
         return;//Tx stop control by Main Loop
       }
-
+#if GUI_THEME == 0
       checkCAT();
+#endif
     } //end of while
     
   }
@@ -216,8 +218,9 @@ void cwKeyer(void){
           }
           break;
       }
-  
+#if GUI_THEME == 0  
       checkCAT();
+#endif
     } //end of while
   }//end of KEYER_IAMBIC_*
 }

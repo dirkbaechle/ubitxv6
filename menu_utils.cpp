@@ -7,6 +7,11 @@
 #include "nano_gui.h"
 #include "utils.h"
 
+#if GUI_THEME != 0
+static const unsigned int SELECT_CORNER_SIZE = 7;
+static const unsigned int SELECT_CORNER_COLOR = DISPLAY_ORANGE;
+#endif
+
 bool findPressedButton(const Button* const* buttons,
                        const uint8_t num_buttons,
                        Button *const button_out,
@@ -30,12 +35,21 @@ bool findPressedButton(const Button* const* buttons,
 void movePuck(const Button *const b_old,
               const Button *const b_new)
 {
+#if GUI_THEME == 0
   if(nullptr != b_old){
     displayRect(b_old->x,b_old->y,b_old->w,b_old->h,COLOR_INACTIVE_BORDER);
   }
   if(nullptr != b_new){
     displayRect(b_new->x,b_new->y,b_new->w,b_new->h,COLOR_ACTIVE_BORDER);
   }
+#else
+  if(nullptr != b_old){
+    displayCorner(b_old->x, b_old->y, SELECT_CORNER_SIZE, COLOR_BACKGROUND);
+  }
+  if(nullptr != b_new){
+    displayCorner(b_new->x, b_new->y, SELECT_CORNER_SIZE, SELECT_CORNER_COLOR);
+  }
+#endif
 }
 
 void initSelector(int16_t *const raw_select_val_in_out,

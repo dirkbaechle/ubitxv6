@@ -7,7 +7,7 @@
 #define CALLSIGN_TEXT "CALLSIGN"
 
 // The software version number of the ubitx firmware
-#define VERSION_TEXT "R1.5.1"
+#define VERSION_TEXT "R2.0.1"
 
 // Set to your preferred region for the correct band frequencies
 // 1 - Africa, Europe, Middle East, and northern Asia
@@ -32,3 +32,9 @@
 // 2 - 50Hz
 // 3 - 100Hz
 #define DEFAULT_TUNING_STEP_SIZE 2
+
+// Sets the GUI theme to use
+// 0 - default
+// 1 - more oriented towards Google Materials (e.g. rounded buttons), be aware that for this
+//     option, the calibration and CAT functionalities had to be removed and aren't available! 
+#define GUI_THEME 0

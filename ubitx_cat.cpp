@@ -3,9 +3,12 @@
 #include "scratch_space.h"
 #include "settings.h"
 #include "tuner.h"
+#include "config.h"
+
+#if GUI_THEME == 0
 
 /**
- * The CAT protocol is used by many radios to provide remote control to comptuers through
+ * The CAT protocol is used by many radios to provide remote control to computers through
  * the serial port.
  *
  * This is very much a work in progress. Parts of this code have been liberally
@@ -417,4 +420,4 @@ void checkCAT(){
   timeout = 0;
 }
 
-
+#endif // of: #if GUI_THEME == 0

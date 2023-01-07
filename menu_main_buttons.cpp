@@ -39,7 +39,7 @@ static const unsigned int LAYOUT_BUTTON_PITCH_Y = 40;
 
 static const unsigned int LAYOUT_CW_TEXT_X = 0;
 static const unsigned int LAYOUT_CW_TEXT_Y = LAYOUT_BUTTON_Y + 3*LAYOUT_BUTTON_PITCH_Y + 1;
-static const unsigned int LAYOUT_CW_TEXT_WIDTH = 220;
+static const unsigned int LAYOUT_CW_TEXT_WIDTH = 200;
 static const unsigned int LAYOUT_CW_TEXT_HEIGHT = 36;
 
 static const unsigned int LAYOUT_VERSION_TEXT_X = LAYOUT_CW_TEXT_X + LAYOUT_CW_TEXT_WIDTH + 1;
@@ -47,9 +47,9 @@ static const unsigned int LAYOUT_VERSION_TEXT_Y = LAYOUT_CW_TEXT_Y;
 static const unsigned int LAYOUT_VERSION_TEXT_WIDTH = 320 - LAYOUT_CW_TEXT_WIDTH - 1;
 static const unsigned int LAYOUT_VERSION_TEXT_HEIGHT = LAYOUT_CW_TEXT_HEIGHT;
 
-static const unsigned int LAYOUT_TX_X = 280;
+static const unsigned int LAYOUT_TX_X = 260;
 static const unsigned int LAYOUT_TX_Y = LAYOUT_MODE_TEXT_Y;
-static const unsigned int LAYOUT_TX_WIDTH = 40;
+static const unsigned int LAYOUT_TX_WIDTH = 60;
 static const unsigned int LAYOUT_TX_HEIGHT = 36;
 
 static const unsigned int LAYOUT_TUNING_STEP_SIZE_WIDTH = 20;
@@ -61,14 +61,14 @@ void drawTx()
     // We're currently sending...
     if (globalSettings.morsePracticeMode) {
       // ... but in practice mode.
-      displayText(b,LAYOUT_TX_X,LAYOUT_TX_Y,LAYOUT_TX_WIDTH,LAYOUT_TX_HEIGHT,DISPLAY_ORANGE,DISPLAY_OLIVE,COLOR_BACKGROUND);
+      displayButtonText(b,LAYOUT_TX_X,LAYOUT_TX_Y,LAYOUT_TX_WIDTH,LAYOUT_TX_HEIGHT,DISPLAY_ORANGE,DISPLAY_OLIVE,DISPLAY_OLIVE);
     } else {
       // ... for real.
-      displayText(b,LAYOUT_TX_X,LAYOUT_TX_Y,LAYOUT_TX_WIDTH,LAYOUT_TX_HEIGHT,COLOR_ACTIVE_TEXT,COLOR_ACTIVE_BACKGROUND,COLOR_BACKGROUND);
+      displayButtonText(b,LAYOUT_TX_X,LAYOUT_TX_Y,LAYOUT_TX_WIDTH,LAYOUT_TX_HEIGHT,COLOR_ACTIVE_TEXT,COLOR_ACTIVE_BACKGROUND,COLOR_ACTIVE_BACKGROUND);
     }
   } else {
     // Not sending
-    displayText(b,LAYOUT_TX_X,LAYOUT_TX_Y,LAYOUT_TX_WIDTH,LAYOUT_TX_HEIGHT,DISPLAY_DARKGREY,DISPLAY_LIGHTGREY,COLOR_BACKGROUND);
+    displayButtonText(b,LAYOUT_TX_X,LAYOUT_TX_Y,LAYOUT_TX_WIDTH,LAYOUT_TX_HEIGHT,DISPLAY_DARKGREY,DISPLAY_LIGHTGREY,DISPLAY_LIGHTGREY);
   }
 }
 
@@ -103,7 +103,7 @@ void toVfoB(char* text_out, const uint16_t max_text_size);
 ButtonStatus_e bsVfoB();
 void osVfoB();
 constexpr Button bVfoB PROGMEM = {
-  LAYOUT_VFO_LABEL_X + 1*LAYOUT_VFO_LABEL_PITCH_X + LAYOUT_TUNING_STEP_SIZE_WIDTH,
+  LAYOUT_VFO_LABEL_X + 1*LAYOUT_VFO_LABEL_PITCH_X + LAYOUT_TUNING_STEP_SIZE_WIDTH/2,
   LAYOUT_VFO_LABEL_Y,
   LAYOUT_VFO_LABEL_WIDTH,
   LAYOUT_VFO_LABEL_HEIGHT,

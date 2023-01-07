@@ -45,7 +45,7 @@ QUICKLIST_BUTTON_GENERATE(1);
 QUICKLIST_BUTTON_GENERATE(2);
 QUICKLIST_BUTTON_GENERATE(3);
 
-constexpr char txtQLCancel [] PROGMEM = "Can";
+constexpr char txtQLCancel [] PROGMEM = "Cancel";
 void osQLCancel();
 constexpr Button bQLCancel PROGMEM = {
   LAYOUT_BUTTON_X,

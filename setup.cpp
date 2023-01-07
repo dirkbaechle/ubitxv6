@@ -26,12 +26,24 @@
  *  - If the menu item is NOT clicked on, then the menu's prompt is to be displayed
  */
 
+#if GUI_THEME == 0
 static const unsigned int COLOR_TEXT = DISPLAY_WHITE;
 static const unsigned int COLOR_BACKGROUND = DISPLAY_BLACK;
 static const unsigned int COLOR_TITLE_BACKGROUND = DISPLAY_NAVY;
 static const unsigned int COLOR_SETTING_BACKGROUND = DISPLAY_NAVY;
 static const unsigned int COLOR_ACTIVE_BORDER = DISPLAY_WHITE;
 static const unsigned int COLOR_INACTIVE_BORDER = COLOR_BACKGROUND;
+#else
+static const unsigned int COLOR_TEXT = DISPLAY_GREEN;
+static const unsigned int COLOR_BACKGROUND = DISPLAY_BLACK;
+static const unsigned int COLOR_TITLE_BACKGROUND = DISPLAY_BLACK;
+static const unsigned int COLOR_SETTING_BACKGROUND = DISPLAY_BLACK;
+static const unsigned int COLOR_ACTIVE_BORDER = DISPLAY_ORANGE;
+static const unsigned int COLOR_INACTIVE_BORDER = COLOR_BACKGROUND;
+
+static const unsigned int LAYOUT_ITEM_PADDING = 20;
+static const unsigned int LAYOUT_PIXEL_PER_CHAR = 10;
+#endif
 
 static const unsigned int LAYOUT_TITLE_X = 12;
 static const unsigned int LAYOUT_TITLE_Y = 12;
@@ -44,14 +56,22 @@ static const unsigned int LAYOUT_ITEM_WIDTH = 260;
 static const unsigned int LAYOUT_ITEM_HEIGHT = 30;
 static const unsigned int LAYOUT_ITEM_PITCH_Y = LAYOUT_ITEM_HEIGHT + 1;
 
-static const unsigned int LAYOUT_SETTING_REF_VALUE_X = LAYOUT_ITEM_X;
 static const unsigned int LAYOUT_SETTING_REF_VALUE_Y = LAYOUT_ITEM_Y + 3*LAYOUT_ITEM_PITCH_Y;
+#if GUI_THEME == 0
+static const unsigned int LAYOUT_SETTING_REF_VALUE_X = LAYOUT_ITEM_X;
 static const unsigned int LAYOUT_SETTING_REF_VALUE_WIDTH = LAYOUT_ITEM_WIDTH;
+#else
+static const unsigned int LAYOUT_SETTING_REF_VALUE_WIDTH = 140;
+#endif
 static const unsigned int LAYOUT_SETTING_REF_VALUE_HEIGHT = LAYOUT_ITEM_HEIGHT;
 
-static const unsigned int LAYOUT_SETTING_VALUE_X = LAYOUT_ITEM_X;
 static const unsigned int LAYOUT_SETTING_VALUE_Y = LAYOUT_ITEM_Y + 4*LAYOUT_ITEM_PITCH_Y;
+#if GUI_THEME == 0
+static const unsigned int LAYOUT_SETTING_VALUE_X = LAYOUT_ITEM_X;
 static const unsigned int LAYOUT_SETTING_VALUE_WIDTH = LAYOUT_ITEM_WIDTH;
+#else
+static const unsigned int LAYOUT_SETTING_VALUE_WIDTH = 140;
+#endif
 static const unsigned int LAYOUT_SETTING_VALUE_HEIGHT = LAYOUT_ITEM_HEIGHT;
 
 static const unsigned int LAYOUT_INSTRUCTIONS_TEXT_X = 20;
@@ -67,7 +87,7 @@ static const unsigned int LAYOUT_CONFIRM_TEXT_HEIGHT = LAYOUT_ITEM_HEIGHT;
 // For display of WpM in "mode" area
 static const unsigned int LAYOUT_VFO_LABEL_Y = 10;
 static const unsigned int LAYOUT_VFO_LABEL_HEIGHT = 36;
-static const unsigned int LAYOUT_TX_X = 280;
+static const unsigned int LAYOUT_TX_X = 260;
 static const unsigned int LAYOUT_MODE_TEXT_X = 160;
 static const unsigned int LAYOUT_MODE_TEXT_Y = LAYOUT_VFO_LABEL_Y + LAYOUT_VFO_LABEL_HEIGHT + 1;
 static const unsigned int LAYOUT_MODE_TEXT_WIDTH = LAYOUT_TX_X - 1 - LAYOUT_MODE_TEXT_X;
@@ -87,7 +107,11 @@ void displayDialog(const char* title,
                    const char* instructions){
   displayClear(COLOR_BACKGROUND);
   strncpy_P(b,title,sizeof(b));
+#if GUI_THEME == 0
   displayText(b, LAYOUT_TITLE_X, LAYOUT_TITLE_Y, LAYOUT_TITLE_WIDTH, LAYOUT_TITLE_HEIGHT, COLOR_TEXT, COLOR_TITLE_BACKGROUND, COLOR_ACTIVE_BORDER);
+#else
+  displayButtonText(b, LAYOUT_TITLE_X, LAYOUT_TITLE_Y, LAYOUT_TITLE_WIDTH, LAYOUT_TITLE_HEIGHT, COLOR_TITLE_BACKGROUND, COLOR_TEXT, COLOR_TEXT);
+#endif
   strncpy_P(b,instructions,sizeof(b));
   displayText(b, LAYOUT_INSTRUCTIONS_TEXT_X, LAYOUT_INSTRUCTIONS_TEXT_Y, LAYOUT_INSTRUCTIONS_TEXT_WIDTH, LAYOUT_INSTRUCTIONS_TEXT_HEIGHT, COLOR_TEXT, COLOR_BACKGROUND, COLOR_BACKGROUND, TextJustification_e::Left);
   strncpy_P(b,(const char*)F("Push Tune to Save"),sizeof(b));
@@ -139,8 +163,15 @@ void initSetting()
   drawSetting(&screen);
   screen.Initialize(&setupMenuLastValue);
   screen.OnValueChange(setupMenuLastValue,b,sizeof(b));
+#if GUI_THEME == 0
   displayText(b, LAYOUT_SETTING_VALUE_X, LAYOUT_SETTING_VALUE_Y, LAYOUT_SETTING_VALUE_WIDTH, LAYOUT_SETTING_VALUE_HEIGHT, COLOR_TEXT, COLOR_TITLE_BACKGROUND, COLOR_BACKGROUND);
   displayText(b, LAYOUT_SETTING_REF_VALUE_X, LAYOUT_SETTING_REF_VALUE_Y, LAYOUT_SETTING_REF_VALUE_WIDTH, LAYOUT_SETTING_REF_VALUE_HEIGHT, COLOR_SETTING_BACKGROUND, COLOR_BACKGROUND, COLOR_BACKGROUND);
+#else
+  displayFillrect(160 - LAYOUT_SETTING_VALUE_WIDTH/2, LAYOUT_SETTING_VALUE_Y, LAYOUT_SETTING_VALUE_WIDTH, LAYOUT_SETTING_VALUE_HEIGHT, COLOR_BACKGROUND);
+  displayButtonText(b, 160 - LAYOUT_SETTING_VALUE_WIDTH/2, LAYOUT_SETTING_VALUE_Y, LAYOUT_SETTING_VALUE_WIDTH, LAYOUT_SETTING_VALUE_HEIGHT, COLOR_BACKGROUND, COLOR_ACTIVE_BORDER, COLOR_ACTIVE_BORDER);
+  displayFillrect(160 - LAYOUT_SETTING_VALUE_WIDTH/2, LAYOUT_SETTING_REF_VALUE_Y, LAYOUT_SETTING_REF_VALUE_WIDTH, LAYOUT_SETTING_REF_VALUE_HEIGHT, COLOR_BACKGROUND);
+  displayText(b, 160 - LAYOUT_SETTING_VALUE_WIDTH/2, LAYOUT_SETTING_REF_VALUE_Y, LAYOUT_SETTING_REF_VALUE_WIDTH, LAYOUT_SETTING_REF_VALUE_HEIGHT, DISPLAY_DARKGREY, COLOR_BACKGROUND, COLOR_BACKGROUND);
+#endif
   setupMenuRawValue = setupMenuLastValue * (int32_t)screen.KnobDivider;
 }
 
@@ -177,7 +208,12 @@ MenuReturn_e runSetting(const ButtonPress_e tuner_button,
 
     if(value != setupMenuLastValue){
       screen.OnValueChange(value,b,sizeof(b));
+#if GUI_THEME == 0
       displayText(b, LAYOUT_SETTING_VALUE_X, LAYOUT_SETTING_VALUE_Y, LAYOUT_SETTING_VALUE_WIDTH, LAYOUT_SETTING_VALUE_HEIGHT, COLOR_TEXT, COLOR_TITLE_BACKGROUND, COLOR_BACKGROUND);
+#else
+      displayFillrect(160 - LAYOUT_SETTING_VALUE_WIDTH/2, LAYOUT_SETTING_VALUE_Y, LAYOUT_SETTING_VALUE_WIDTH, LAYOUT_SETTING_VALUE_HEIGHT, COLOR_BACKGROUND);
+      displayButtonText(b, 160 - LAYOUT_SETTING_VALUE_WIDTH/2, LAYOUT_SETTING_VALUE_Y, LAYOUT_SETTING_VALUE_WIDTH, LAYOUT_SETTING_VALUE_HEIGHT, COLOR_BACKGROUND, COLOR_ACTIVE_BORDER, COLOR_ACTIVE_BORDER);
+#endif
       setupMenuLastValue = value;
     }
   }
@@ -191,6 +227,7 @@ void activateSetting(const SettingScreen_t *const new_setting_P)
   enterSubmenu(&setupMenuActiveSettingMenu);
 }
 
+#if GUI_THEME == 0
 //Local Oscillator
 void ssLocalOscInitialize(long int* start_value_out){
   {
@@ -274,6 +311,7 @@ const SettingScreen_t ssBfo PROGMEM = {
   ssBfoFinalize
 };
 void runBfoSetting(){activateSetting(&ssBfo);}
+#endif // of: #if GUI_THEME == 0
 
 //CW Tone
 void ssCwToneInitialize(long int* start_value_out)
@@ -298,7 +336,7 @@ void ssCwToneFinalize(const long int final_value)
   SaveSettingsToEeprom();
 }
 const char SS_CW_TONE_T [] PROGMEM = "Tone";
-const char SS_CW_TONE_A [] PROGMEM = "Select a frequency that\nCW mode to tune for";
+const char SS_CW_TONE_A [] PROGMEM = "Select a tone frequency\nfor CW mode";
 const SettingScreen_t ssTone PROGMEM = {
   SS_CW_TONE_T,
   SS_CW_TONE_A,
@@ -356,18 +394,14 @@ void ssKeyerValidate(const long int candidate_value_in, long int* validated_valu
 }
 void ssKeyerChange(const long int new_value, char* buff_out, const size_t buff_out_size)
 {
-  char m;
   if(KeyerMode_e::KEYER_STRAIGHT == new_value){
     strncpy_P(buff_out,(const char*)F("Hand Key"),buff_out_size);
-    m = 'S';
   }
   else if(KeyerMode_e::KEYER_IAMBIC_A == new_value){
     strncpy_P(buff_out,(const char*)F("Iambic A"),buff_out_size);
-    m = 'A';
   }
   else{
     strncpy_P(buff_out,(const char*)F("Iambic B"),buff_out_size);
-    m = 'B';
   }
   enc_read();//Consume any rotations during morse playback
 }
@@ -526,6 +560,7 @@ struct MenuItem_t {
 
 void initSetupMenu(const MenuItem_t* const menu_items,
                    const uint16_t num_items);
+
 MenuReturn_e runSetupMenu(const MenuItem_t* const menu_items,
                           const uint16_t num_items,
                           const ButtonPress_e tuner_button,
@@ -561,6 +596,7 @@ MenuReturn_e runSetupMenu(const MenuItem_t* const menu_items,
             enterSubmenu(&setupMenu##menu_name);\
           }\
 
+#if GUI_THEME == 0
 const char MI_TOUCH [] PROGMEM = "Touch Screen";
 void setupTouchSetting();
 
@@ -577,7 +613,7 @@ void setupTouchSetting(){
   setupTouch();
   initSetupMenuCalibration();
 }
-
+#endif // of: #if GUI_THEME == 0
 const char MT_CW [] PROGMEM = "CW Setup";
 const MenuItem_t menuItemsCw [] PROGMEM {
   {MT_CW,nullptr},//Title
@@ -592,7 +628,9 @@ GENERATE_MENU_T(Cw);
 const char MT_SETTINGS [] PROGMEM = "Settings";
 const MenuItem_t menuItemsSetupRoot [] PROGMEM {
   {MT_SETTINGS,nullptr},//Title
+#if GUI_THEME == 0
   {MT_CAL,runCalibrationMenu},
+#endif
   {MT_CW,runCwMenu},
   {SS_RESET_ALL_T,runResetAllSetting},
 };
@@ -608,6 +646,7 @@ void drawMenu(const MenuItem_t* const items, const uint16_t num_items)
   MenuItem_t mi = {"",nullptr};
   memcpy_P(&mi,&items[0],sizeof(mi));
   strncpy_P(b,mi.ItemName,sizeof(b));
+#if GUI_THEME == 0
   displayText(b, LAYOUT_TITLE_X, LAYOUT_TITLE_Y, LAYOUT_TITLE_WIDTH, LAYOUT_TITLE_HEIGHT, COLOR_TEXT, COLOR_TITLE_BACKGROUND, COLOR_ACTIVE_BORDER);
   for(unsigned int i = 1; i < num_items; ++i){
     memcpy_P(&mi,&items[i],sizeof(mi));
@@ -617,25 +656,74 @@ void drawMenu(const MenuItem_t* const items, const uint16_t num_items)
   memcpy_P(&mi,&exitMenu,sizeof(mi));
   strncpy_P(b,mi.ItemName,sizeof(b));
   displayText(b, LAYOUT_ITEM_X, LAYOUT_ITEM_Y + (num_items-1)*LAYOUT_ITEM_PITCH_Y, LAYOUT_ITEM_WIDTH, LAYOUT_ITEM_HEIGHT, COLOR_TEXT, COLOR_BACKGROUND, COLOR_INACTIVE_BORDER, TextJustification_e::Left);
+#else
+  uint16_t width_out = LAYOUT_PIXEL_PER_CHAR * strlen(b);
+  // Display title centered with some padding
+  displayButtonText(b, 160 - width_out/2 - LAYOUT_ITEM_PADDING, LAYOUT_TITLE_Y,
+                    width_out + 2*LAYOUT_ITEM_PADDING, LAYOUT_TITLE_HEIGHT, COLOR_TITLE_BACKGROUND, COLOR_TEXT, COLOR_INACTIVE_BORDER);
+
+  for(unsigned int i = 1; i < num_items; ++i){
+    memcpy_P(&mi,&items[i],sizeof(mi));
+    strncpy_P(b,mi.ItemName,sizeof(b));
+    width_out = LAYOUT_PIXEL_PER_CHAR * strlen(b);
+    // Display menu item centered with some padding
+    displayText(b, 160 - width_out/2 - LAYOUT_ITEM_PADDING, LAYOUT_ITEM_Y + (i-1)*LAYOUT_ITEM_PITCH_Y,
+                width_out + 2*LAYOUT_ITEM_PADDING, LAYOUT_ITEM_HEIGHT, COLOR_TEXT, COLOR_BACKGROUND, COLOR_INACTIVE_BORDER);
+  }
+
+  memcpy_P(&mi,&exitMenu,sizeof(mi));
+  strncpy_P(b,mi.ItemName,sizeof(b));
+  width_out = LAYOUT_PIXEL_PER_CHAR * strlen(b);
+  // Display exit button centered with some padding
+  displayText(b, 160 - width_out/2 - LAYOUT_ITEM_PADDING, LAYOUT_ITEM_Y + (num_items-1)*LAYOUT_ITEM_PITCH_Y,
+              width_out + 2*LAYOUT_ITEM_PADDING, LAYOUT_ITEM_HEIGHT, COLOR_TEXT, COLOR_BACKGROUND, COLOR_INACTIVE_BORDER);
+#endif // of: #if GUI_THEME == 0
 }
 
+#if GUI_THEME == 0
 void movePuck(unsigned int old_index,
               unsigned int new_index)
 {
+#else
+void movePuck(unsigned int old_index,
+              unsigned int new_index,
+              const MenuItem_t* const menu_items)
+{
+  MenuItem_t mi = {"",nullptr};
+  uint16_t width_out = 0;  
+#endif
   //Don't update if we're already on the right selection
   if(old_index == new_index){
     return;
   }
   else if(((unsigned int)-1) != old_index){
     //Clear old
-    displayRect(LAYOUT_ITEM_X, LAYOUT_ITEM_Y + (old_index*LAYOUT_ITEM_PITCH_Y), LAYOUT_ITEM_WIDTH, LAYOUT_ITEM_HEIGHT, COLOR_INACTIVE_BORDER);
+#if GUI_THEME == 0
+    displayRect(LAYOUT_ITEM_X, LAYOUT_ITEM_Y + (old_index*LAYOUT_ITEM_PITCH_Y), 
+                LAYOUT_ITEM_WIDTH, LAYOUT_ITEM_HEIGHT, COLOR_INACTIVE_BORDER);
+#else
+    memcpy_P(&mi,&menu_items[old_index+1],sizeof(mi));
+    strncpy_P(b,mi.ItemName,sizeof(b));
+    width_out = LAYOUT_PIXEL_PER_CHAR * strlen(b);
+    displayRoundrect(160 - width_out/2 - LAYOUT_ITEM_PADDING, LAYOUT_ITEM_Y + (old_index*LAYOUT_ITEM_PITCH_Y),
+                     width_out + 2*LAYOUT_ITEM_PADDING, LAYOUT_ITEM_HEIGHT, LAYOUT_ITEM_HEIGHT/2, COLOR_INACTIVE_BORDER);
+#endif
   }
   //Draw new
-  displayRect(LAYOUT_ITEM_X, LAYOUT_ITEM_Y + (new_index*LAYOUT_ITEM_PITCH_Y), LAYOUT_ITEM_WIDTH, LAYOUT_ITEM_HEIGHT, COLOR_ACTIVE_BORDER);
+#if GUI_THEME == 0
+  displayRect(LAYOUT_ITEM_X, LAYOUT_ITEM_Y + (new_index*LAYOUT_ITEM_PITCH_Y),
+              LAYOUT_ITEM_WIDTH, LAYOUT_ITEM_HEIGHT, COLOR_ACTIVE_BORDER);
+#else
+  memcpy_P(&mi,&menu_items[new_index+1],sizeof(mi));
+  strncpy_P(b,mi.ItemName,sizeof(b));
+  width_out = LAYOUT_PIXEL_PER_CHAR * strlen(b);
+  displayRoundrect(160 - width_out/2 - LAYOUT_ITEM_PADDING, LAYOUT_ITEM_Y + (new_index*LAYOUT_ITEM_PITCH_Y),
+                    width_out + 2*LAYOUT_ITEM_PADDING, LAYOUT_ITEM_HEIGHT, LAYOUT_ITEM_HEIGHT/2, COLOR_TEXT);
+#endif
 }
 
 int16_t setupMenuSelector = 0;
-
+#if GUI_THEME == 0
 void initSetupMenu(const MenuItem_t* const menu_items,
                    const uint16_t num_items)
 {
@@ -643,6 +731,15 @@ void initSetupMenu(const MenuItem_t* const menu_items,
   setupMenuSelector = 0;
   movePuck(-1,0);//Force draw of puck
 }
+#else
+void initSetupMenu(const MenuItem_t* menu_items,
+                   const uint16_t num_items)
+{
+  drawMenu(menu_items,num_items);
+  setupMenuSelector = 0;
+  movePuck(-1,0, menu_items);//Force draw of puck
+}
+#endif
 
 MenuReturn_e runSetupMenu(const MenuItem_t* const menu_items,
                           const uint16_t num_items,
@@ -671,7 +768,11 @@ MenuReturn_e runSetupMenu(const MenuItem_t* const menu_items,
     setupMenuSelector = LIMIT(setupMenuSelector + knob,0,(int16_t)(num_items*MENU_KNOB_COUNTS_PER_ITEM - 1));
     const int16_t new_index = setupMenuSelector/MENU_KNOB_COUNTS_PER_ITEM;
     if(cur_index != new_index){
+#if GUI_THEME == 0
       movePuck(cur_index,new_index);
+#else
+      movePuck(cur_index,new_index, menu_items);
+#endif
     }
   }
 
@@ -709,18 +810,18 @@ void drawTuningStepSize()
 {
   displayFillrect(LAYOUT_MODE_TEXT_X - LAYOUT_TUNING_STEP_SIZE_WIDTH/2,0,LAYOUT_TUNING_STEP_SIZE_WIDTH,LAYOUT_VFO_LABEL_Y + LAYOUT_VFO_LABEL_HEIGHT, COLOR_TITLE_BACKGROUND);
   // Always draw first dot
-  displayFillcircle(LAYOUT_MODE_TEXT_X + LAYOUT_TUNING_STEP_RADIUS + 1, 1 * LAYOUT_TUNING_STEP_DISTANCE, LAYOUT_TUNING_STEP_RADIUS, COLOR_TEXT);
+  displayFillcircle(LAYOUT_MODE_TEXT_X, 1 * LAYOUT_TUNING_STEP_DISTANCE, LAYOUT_TUNING_STEP_RADIUS, COLOR_TEXT);
 
   if (globalSettings.tuningStepSize > 10) {
     // Draw second dot
-    displayFillcircle(LAYOUT_MODE_TEXT_X + LAYOUT_TUNING_STEP_RADIUS + 1, 2 * LAYOUT_TUNING_STEP_DISTANCE, LAYOUT_TUNING_STEP_RADIUS, COLOR_TEXT);
+    displayFillcircle(LAYOUT_MODE_TEXT_X, 2 * LAYOUT_TUNING_STEP_DISTANCE, LAYOUT_TUNING_STEP_RADIUS, COLOR_TEXT);
   }
   if (globalSettings.tuningStepSize > 20) {
     // Draw third dot
-    displayFillcircle(LAYOUT_MODE_TEXT_X + LAYOUT_TUNING_STEP_RADIUS + 1, 3 * LAYOUT_TUNING_STEP_DISTANCE, LAYOUT_TUNING_STEP_RADIUS, COLOR_TEXT);
+    displayFillcircle(LAYOUT_MODE_TEXT_X, 3 * LAYOUT_TUNING_STEP_DISTANCE, LAYOUT_TUNING_STEP_RADIUS, COLOR_TEXT);
   }
   if (globalSettings.tuningStepSize > 50) {
     // Draw fourth dot
-    displayFillcircle(LAYOUT_MODE_TEXT_X + LAYOUT_TUNING_STEP_RADIUS + 1, 4 * LAYOUT_TUNING_STEP_DISTANCE, LAYOUT_TUNING_STEP_RADIUS, COLOR_TEXT);
+    displayFillcircle(LAYOUT_MODE_TEXT_X, 4 * LAYOUT_TUNING_STEP_DISTANCE, LAYOUT_TUNING_STEP_RADIUS, COLOR_TEXT);
   }
 }

@@ -131,9 +131,10 @@ void initPorts(){
 
 void setup()
 {
+#if GUI_THEME == 0
   Serial.begin(38400);
   Serial.flush();
-
+#endif
   initSettings();
   displayInit();
   initTouch();
@@ -141,6 +142,7 @@ void setup()
   initOscillators();
   setFrequency(globalSettings.vfoA.frequency);
 
+#if GUI_THEME == 0
   //Run initial calibration routine if button is pressed during power up
   if(ButtonPress_e::NotPressed != CheckTunerButton()){
     LoadDefaultSettings();
@@ -152,7 +154,7 @@ void setup()
     setFrequency(7100000L);
     runBfoSetting();
   }
-
+#endif
   rootMenu->initMenu();
 }
 
@@ -169,7 +171,9 @@ void loop(){
     checkPTT();
   }
 
+#if GUI_THEME == 0
   checkCAT();
+#endif
 
   if(globalSettings.txActive){
     //Don't run menus when transmitting

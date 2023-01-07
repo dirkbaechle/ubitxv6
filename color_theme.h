@@ -1,12 +1,21 @@
 #pragma once
 
 #include "colors.h"
+#include "config.h"
 
+#if GUI_THEME == 0
 static const unsigned int COLOR_TEXT = DISPLAY_WHITE;
 static const unsigned int COLOR_BACKGROUND = DISPLAY_NAVY;
 
 static const unsigned int COLOR_ACTIVE_VFO_TEXT = DISPLAY_WHITE;
 static const unsigned int COLOR_ACTIVE_VFO_BACKGROUND = DISPLAY_BLACK;
+#else
+static const unsigned int COLOR_TEXT = DISPLAY_GREEN;
+static const unsigned int COLOR_BACKGROUND = DISPLAY_BLACK;
+
+static const unsigned int COLOR_ACTIVE_VFO_TEXT = DISPLAY_BLACK;
+static const unsigned int COLOR_ACTIVE_VFO_BACKGROUND = DISPLAY_GREEN;
+#endif
 
 static const unsigned int COLOR_INACTIVE_VFO_TEXT = DISPLAY_GREEN;
 static const unsigned int COLOR_INACTIVE_VFO_BACKGROUND = DISPLAY_BLACK;

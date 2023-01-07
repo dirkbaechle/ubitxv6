@@ -6,6 +6,7 @@
 #include "scratch_space.h"
 #include "settings.h"
 #include "touch.h"
+#include "config.h"
 
 #include <SPI.h>
 #include <avr/pgmspace.h>
@@ -62,8 +63,23 @@ void displayRect(unsigned int x,unsigned int y,unsigned int w,unsigned int h,uns
   tft.fillRect(x+w-1,y,1,h,c);
 }
 
+void displayCorner(unsigned int x, unsigned int y, unsigned int w, unsigned int c){
+  for (unsigned int i = 0; w > 0; --w) {
+    tft.drawFastHLine(x, y+i, w, c);
+    ++i;
+  }
+}
+
+void displayRoundrect(unsigned int x,unsigned int y,unsigned int w,unsigned int h,unsigned int r,unsigned int c){
+  tft.drawRoundRect(x, y, w, h, r, c);
+}
+
 void displayFillrect(unsigned int x,unsigned int y,unsigned int w,unsigned int h,unsigned int c){
   tft.fillRect(x,y,w,h,c);
+}
+
+void displayFillroundrect(unsigned int x,unsigned int y,unsigned int w,unsigned int h,unsigned int r,unsigned int c){
+  tft.fillRoundRect(x,y,w,h,r,c);
 }
 
 void displayFillcircle(unsigned int x, unsigned int y, unsigned int r, unsigned int c){
@@ -81,11 +97,8 @@ void displayRawText(const char *text, int x1, int y1, int w, int color, int back
   tft.print(text);
 }
 
-void displayText(const char *const text, int x1, int y1, int w, int h, int color, int background, int border, TextJustification_e justification)
+void displayAlignedText(const char *const text, int x1, int y1, int w, int h, int color, int background, TextJustification_e justification)
 {
-  displayFillrect(x1, y1, w ,h, background);
-  displayRect(x1, y1, w ,h, border);
-
   int16_t x1_out;
   int16_t y1_out;
   uint16_t width_out;
@@ -102,6 +115,30 @@ void displayText(const char *const text, int x1, int y1, int w, int h, int color
   }
   y1 += (ubitx_font->yAdvance + h - ( (int32_t)height_out))/2;
   displayRawText(text,x1,y1,w,color,background);
+}
+
+void displayText(const char *const text, int x1, int y1, int w, int h, int color, int background, int border, TextJustification_e justification)
+{
+#if GUI_THEME == 0
+  displayFillrect(x1, y1, w ,h, background);
+  displayRect(x1, y1, w ,h, border);
+#else
+  if (background != border) {
+    displayRect(x1, y1, w ,h, border);
+  }
+#endif
+  displayAlignedText(text, x1, y1, w, h, color, background, justification);
+}
+
+void displayButtonText(const char *const text, int x1, int y1, int w, int h, int color, int background, int border, TextJustification_e justification)
+{
+#if GUI_THEME == 0
+  displayFillrect(x1, y1, w ,h, background);
+  displayRect(x1, y1, w ,h, border);
+#else
+  displayFillroundrect(x1, y1, w ,h, h/2, background);
+#endif
+  displayAlignedText(text, x1, y1, w, h, color, background, justification);
 }
 
 void drawCross(int16_t x_center,int16_t y_center,uint16_t color)

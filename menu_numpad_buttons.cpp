@@ -115,6 +115,9 @@ void updateCurrentEnteredFrequency(void)
 {
   formatFreq(numpadMenuFrequency,b,sizeof(b),0);
   strncat_P(b,(const char*)F(" Hz"),sizeof(b)-strlen(b));
+#if GUI_THEME != 0
+  displayFillrect(LAYOUT_MODE_TEXT_X,LAYOUT_MODE_TEXT_Y,LAYOUT_MODE_TEXT_WIDTH,LAYOUT_MODE_TEXT_HEIGHT,COLOR_BACKGROUND);
+#endif
   displayText(b,LAYOUT_MODE_TEXT_X,LAYOUT_MODE_TEXT_Y,LAYOUT_MODE_TEXT_WIDTH,LAYOUT_MODE_TEXT_HEIGHT,COLOR_TEXT,COLOR_BACKGROUND,COLOR_BACKGROUND,TextJustification_e::Right);
 }
 
