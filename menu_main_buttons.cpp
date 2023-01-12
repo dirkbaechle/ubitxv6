@@ -56,19 +56,42 @@ static const unsigned int LAYOUT_TUNING_STEP_SIZE_WIDTH = 20;
 
 void drawTx()
 {
-  strncpy_P(b,(const char*)F("TX"),sizeof(b));
-  if (globalSettings.txActive){
-    // We're currently sending...
-    if (globalSettings.morsePracticeMode) {
-      // ... but in practice mode.
-      displayButtonText(b,LAYOUT_TX_X,LAYOUT_TX_Y,LAYOUT_TX_WIDTH,LAYOUT_TX_HEIGHT,DISPLAY_ORANGE,DISPLAY_OLIVE,DISPLAY_OLIVE);
+  // On which frequency would we be sending?
+  uint32_t current_tx_freq = 0;
+  if (globalSettings.ritOn) {
+    current_tx_freq = globalSettings.ritFrequency;
+  } else {
+    if(globalSettings.splitOn) {
+      if(Vfo_e::VFO_B == globalSettings.activeVfo){
+        current_tx_freq = globalSettings.vfoA.frequency;
+      } else{
+        current_tx_freq = globalSettings.vfoB.frequency;
+      }
     } else {
-      // ... for real.
-      displayButtonText(b,LAYOUT_TX_X,LAYOUT_TX_Y,LAYOUT_TX_WIDTH,LAYOUT_TX_HEIGHT,COLOR_ACTIVE_TEXT,COLOR_ACTIVE_BACKGROUND,COLOR_ACTIVE_BACKGROUND);
+      current_tx_freq = GetActiveVfoFreq();
+    }
+  }
+
+  // Is our TX frequency inside a HAM band?
+  if (freqInAnyBand(current_tx_freq)) {
+    // Yes
+    strncpy_P(b,(const char*)F("TX"),sizeof(b));
+    if (globalSettings.txActive){
+      // We're currently sending...
+      if (globalSettings.morsePracticeMode) {
+        // ... but in practice mode.
+        displayButtonText(b,LAYOUT_TX_X,LAYOUT_TX_Y,LAYOUT_TX_WIDTH,LAYOUT_TX_HEIGHT,DISPLAY_ORANGE,DISPLAY_OLIVE,DISPLAY_OLIVE);
+      } else {
+        // ... for real.
+        displayButtonText(b,LAYOUT_TX_X,LAYOUT_TX_Y,LAYOUT_TX_WIDTH,LAYOUT_TX_HEIGHT,COLOR_ACTIVE_TEXT,COLOR_ACTIVE_BACKGROUND,COLOR_ACTIVE_BACKGROUND);
+      }
+    } else {
+      // Not sending
+      displayButtonText(b,LAYOUT_TX_X,LAYOUT_TX_Y,LAYOUT_TX_WIDTH,LAYOUT_TX_HEIGHT,DISPLAY_DARKGREY,DISPLAY_LIGHTGREY,DISPLAY_LIGHTGREY);
     }
   } else {
-    // Not sending
-    displayButtonText(b,LAYOUT_TX_X,LAYOUT_TX_Y,LAYOUT_TX_WIDTH,LAYOUT_TX_HEIGHT,DISPLAY_DARKGREY,DISPLAY_LIGHTGREY,DISPLAY_LIGHTGREY);
+    // We're not inside a HAM band, so don't display the button at all
+    displayFillrect(LAYOUT_TX_X,LAYOUT_TX_Y,LAYOUT_TX_WIDTH,LAYOUT_TX_HEIGHT, COLOR_BACKGROUND);
   }
 }
 

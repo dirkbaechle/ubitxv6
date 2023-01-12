@@ -135,3 +135,12 @@ bool isFreqInBand(const uint32_t frequency,
   return false;
 }
 
+/** Return false if the given frequency is outside of any ham band.
+ * 
+ * This will be used to suppress TX when we're "out
+ * of band". 
+*/
+bool freqInAnyBand(const uint32_t frequency)
+{
+  return findBandIndexFromFreq(frequency) != -1;
+}

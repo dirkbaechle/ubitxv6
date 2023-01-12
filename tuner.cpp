@@ -2,6 +2,7 @@
 
 #include <Arduino.h>
 
+#include "bands.h"
 #include "nano_gui.h"
 #include "pin_definitions.h"
 #include "si5351.h"
@@ -15,7 +16,7 @@ void saveVFOs()
 
 
 void switchVFO(Vfo_e new_vfo){
-  ritDisable();//If we are in RIT mode, we need to disable it before setting the active VFO so that the correct VFO gets it's frequency restored
+  ritDisable();//If we are in RIT mode, we need to disable it before setting the active VFO so that the correct VFO gets its frequency restored
 
   globalSettings.activeVfo = new_vfo;
   setFrequency(GetActiveVfoFreq());
@@ -132,11 +133,12 @@ void startTx(TuningMode_e tx_mode){
   globalSettings.tuningMode = tx_mode;
 
   if (!globalSettings.morsePracticeMode) {
+    uint32_t current_tx_freq = 0;
     if (globalSettings.ritOn){
       //save the current as the rx frequency
-      uint32_t rit_tx_freq = globalSettings.ritFrequency;
+      current_tx_freq = globalSettings.ritFrequency;
       globalSettings.ritFrequency = GetActiveVfoFreq();
-      setFrequency(rit_tx_freq,true);
+      setFrequency(current_tx_freq,true);
     }
     else{
       if(globalSettings.splitOn){
@@ -147,10 +149,12 @@ void startTx(TuningMode_e tx_mode){
           globalSettings.activeVfo = Vfo_e::VFO_B;
         }
       }
-      setFrequency(GetActiveVfoFreq(),true);
+      current_tx_freq = GetActiveVfoFreq();
+      setFrequency(current_tx_freq,true);
     }
-
-    digitalWrite(PIN_TX_RXn, 1);//turn on the tx
+    if (freqInAnyBand(current_tx_freq)) {
+      digitalWrite(PIN_TX_RXn, 1);//turn on the tx
+    }
   }
   globalSettings.txActive = true;
   drawTx();

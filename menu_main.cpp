@@ -57,6 +57,7 @@ void drawMainMenuIncrement()
   static bool last_rit = false;
   static uint16_t last_cw_duration = 0;
   static TuningMode_e last_tuning = TuningMode_e::TUNE_SSB;
+  bool draw_tx = false;
 
   Button button;
 
@@ -70,6 +71,7 @@ void drawMainMenuIncrement()
     
     //We set this here so that we're always hearing what's displayed
     setFrequency(last_freq);
+    draw_tx = true;
   }
 
   if(last_tuning_step != globalSettings.tuningStepSize){
@@ -80,6 +82,7 @@ void drawMainMenuIncrement()
   if(last_mode != GetActiveVfoMode()){
     updateSidebandButtons();
     last_mode = GetActiveVfoMode();
+    draw_tx = true;
   }
 
   if(last_split != globalSettings.splitOn){
@@ -87,11 +90,13 @@ void drawMainMenuIncrement()
     extractAndDrawButton(&button,&bVfoB);
     extractAndDrawButton(&button,&bSpl);
     last_split = globalSettings.splitOn;
+    draw_tx = true;
   }
 
   if(last_rit != globalSettings.ritOn){
     extractAndDrawButton(&button,&bRit);
     last_rit = globalSettings.ritOn;
+    draw_tx = true;
   }
 
   if(last_tuning != globalSettings.tuningMode){
@@ -102,6 +107,10 @@ void drawMainMenuIncrement()
   if(last_cw_duration != globalSettings.cwDitDurationMs){
     drawWpM();
     last_cw_duration = globalSettings.cwDitDurationMs;
+  }
+
+  if (draw_tx) {
+    drawTx();
   }
 }
 

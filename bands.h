@@ -9,3 +9,5 @@ uint32_t getFreqInBand(const uint32_t frequency,
 
 bool isFreqInBand(const uint32_t frequency,
                   const uint8_t band);
+
+bool freqInAnyBand(const uint32_t frequency);
